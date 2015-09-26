@@ -38,7 +38,7 @@ app.post('/api/auth', function(req, res) {
   ad.authenticate(email, password, function(err, auth) {
     if (err || !auth) {
       console.log(email + " failed authentication!");
-      res.status(400).json({error:err || {message: 'Bad client credentials'}, status: 400});
+      res.status(400).json({error: err || {message: 'Bad client credentials'}, status: 400});
       return; 
     }
     var tokenGenerator = new FirebaseTokenGenerator(secret); 
@@ -46,8 +46,8 @@ app.post('/api/auth', function(req, res) {
     console.log(username + " has authenticated!");
     var tokenData = {
       uid: username, 
-      email:email, 
-      domain:"rose-hulman.edu", 
+      email: email, 
+      domain: "rose-hulman.edu", 
       timestamp: moment().format()
     };
     var token = tokenGenerator.createToken(tokenData, tokenOptions);

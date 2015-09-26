@@ -1,0 +1,27 @@
+{
+  "name": "rose-firebase-auth",
+  "version": "1.0.0",
+  "description": "A Auth Server for Rose-Hulman Kerberos",
+  "main": "index.js",
+  "dependencies": {
+    "activedirectory": "^0.7.0",
+    "body-parser": "^1.14.0",
+    "express": "^4.13.3",
+    "firebase-token-generator": "^2.0.0",
+    "moment": "^2.10.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rockwotj/rose-firebase-auth.git"
+  },
+  "author": "Tyler Rockwood",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rockwotj/rose-firebase-auth/issues"
+  },
+  "homepage": "https://github.com/rockwotj/rose-firebase-auth#readme"
+}

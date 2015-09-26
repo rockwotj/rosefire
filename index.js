@@ -13,7 +13,7 @@ var extractEmailUsername = function(email) {
 }
 
 var app = Express();
-// Middleware for JSON encoded post & put requests
+
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: false }));
 
@@ -62,6 +62,6 @@ var port = 8080;
 var ip_address = '127.0.0.1';
 
 var server = app.listen(port, ip_address, function () {
-    console.log('Example app listening at http://localhost:%s', port);
+    console.log('Rose Firebase Auth service listening at http://localhost:%s', port);
 });
 

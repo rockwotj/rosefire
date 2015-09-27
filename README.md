@@ -58,7 +58,7 @@ If there is an error then the response will look like this
 
 ```json
 {
-  "error": "error message"
+  "error": "error message",
   "status": "HTTP Status code of the error"
 }
 ```

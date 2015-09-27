@@ -15,7 +15,7 @@ domain: "rose-hulman.edu"
 timestamp: String: an ISO formatted timestamp of when it was created.
 ```
 
-### Endpoint
+### Endpoints
 
 The hostname for this endpoint has yet to be determined, but will be behind Rose-Hulman's Firewall.
 
@@ -27,7 +27,7 @@ A post request to `api/auth` requires the following parameters in the JSON body 
 {
   "email": "rockwotj@rose-hulman.edu",
   "password": "Pas$w0rd", 
-  `"secret": "<FIREBASE SECRET HERE>",
+  "secret": "<FIREBASE SECRET HERE>",
   "options": {
     "expires": 12340192830,
     "notBefore": 1234234134,
@@ -39,7 +39,9 @@ A post request to `api/auth` requires the following parameters in the JSON body 
 These are the options for the endpoint, more information can be found [here](https://github.com/firebase/firebase-token-generator-node#token-options).
 
 *expires*: A timestamp of when the token is invalid.
+
 *notBefore*: A timestamp of when the token should start being valid.
+
 *admin*: If true, then all security rules are disabled for this user.
 
 And it returns an object that looks like this

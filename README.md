@@ -62,8 +62,6 @@ A post request to `/api/auth/` requires the following parameters in the JSON bod
 
 These are the options for the endpoint, more information can be found [here](https://github.com/firebase/firebase-token-generator-node#token-options).
 
-<style>ul{list-style-type: none;}</style>
-
 * <b>expires</b>: (Integer) A timestamp of when the token is invalid.
 * <b>notBefore</b>: (Integer) A timestamp of when the token should start being valid.
 * <b>admin</b>: (Boolean) If true, then all security rules are disabled for this user. This can only be true for the user who the token is registred with.

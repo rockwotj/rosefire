@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rose Firebase Auth Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  </head>
+  <body>
+    <style>
+      /* Inline styles because I'm too lazy to put them in seperate files & route that w/ express. */
+
+    </style>
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Rose-Hulman Firebase Auth</h1>
+        <p>Have you ever wanted to be able to restrict your <a href="https://www.firebase.com">Firebase</a> powered apps to just Rose-Hulman's campus? Well now you can!</p>
+        <p><a class="btn btn-primary btn-lg" href="https://github.com/rockwotj/rose-firebase-auth" role="button">Learn more</a></p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="media">
+        <div class="media-left">
+          <a href="https://www.firebase.com/docs/security/guide/index.html">
+            <img class="media-object" src="https://www.firebase.com/resources/images/website/features/auth_blue.png" alt="Firebase Auth">
+          </a>
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">Firebase Authentication with Rose-Hulman</h4>
+          <p>
+            In order to use this service, you first need to register your app
+            (you can do this programmatically using the <code>/api/register/</code> endpoint).
+            Do this by providing your Rose-Hulman username and password 
+            (assuring that you're actually a Rose-Hulman student) along with your Firebase secret. 
+            Your secret can be found under the Secrets tab in our Firebase app's dashboard. 
+          </p>
+          <p>
+            Once you've registered, you'll recieve a token that you <b>must</b> include when making requests
+            to the <code>/api/auth/</code> endpoint. However, assuming that you make the correct request and 
+            the credentials are valid, the <code>/api/auth/</code> endpoint will return a token that you can
+            use as a <a href="https://www.firebase.com/docs/web/guide/login/custom.html#section-authenticating-clients">Firebase custom auth</a>
+            token.
+          </p>
+        </div>
+      </div>
+      <form class="form-horizontal">
+        <fieldset>
+
+        <!-- Form Name -->
+        <legend>Registration Form</legend>
+
+        <!-- Appended Input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="email">Rose Email</label>
+          <div class="col-md-6">
+            <div class="input-group">
+              <input id="email" name="email" class="form-control" placeholder="you" type="text" required="">
+              <span class="input-group-addon">@rose-hulman.edu</span>
+            </div>
+            
+          </div>
+        </div>
+        <!-- Password input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="password">Rose Password</label>
+          <div class="col-md-6">
+            <input id="password" name="password" type="password" placeholder="" class="form-control input-md" required="">
+            
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="secret">Firebase Secret</label>  
+          <div class="col-md-8">
+          <input id="secret" name="secret" type="text" placeholder="Paste your secret here!" class="form-control input-md" required="">
+            
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="generate"></label>
+          <div class="col-md-4">
+            <button id="generate" name="generate" type="button" class="btn btn-success">Generate Token</button>
+          </div>
+        </div>
+
+        </fieldset>
+      </form>
+      <div class="alert alert-success" role="alert">...</div>
+      <div class="alert alert-danger" role="alert">...</div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        console.log("Ready");
+        $('#generate').click(function() {
+          var payload = {
+            email: $('#email').val() + "@rose-hulman.edu",
+            password: $('#password').val(),
+            secret: $('#secret').val()
+          };
+          console.log(payload);
+        });
+      });
+    </script>
+  </body>
+</html>

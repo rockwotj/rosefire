@@ -11,13 +11,19 @@
   <body>
     <style>
       /* Inline styles because I'm too lazy to put them in seperate files & route that w/ express. */
-
+      .wordwrap { 
+        white-space: pre-wrap;      /* CSS3 */   
+        white-space: -moz-pre-wrap; /* Firefox */    
+        white-space: -pre-wrap;     /* Opera <7 */   
+        white-space: -o-pre-wrap;   /* Opera 7 */    
+        word-wrap: break-word;      /* IE */
+      }
     </style>
     <div class="jumbotron">
       <div class="container">
         <h1>Rose-Hulman Firebase Auth</h1>
         <p>Have you ever wanted to be able to restrict your <a href="https://www.firebase.com">Firebase</a> powered apps to just Rose-Hulman's campus? Well now you can!</p>
-        <p><a class="btn btn-primary btn-lg" href="https://github.com/rockwotj/rose-firebase-auth" role="button">Learn more</a></p>
+        <p><a class="btn btn-primary btn-lg" href="https://github.com/rockwotj/rose-firebase-auth/" role="button">Learn more</a></p>
       </div>
     </div>
     <div class="container">
@@ -45,7 +51,7 @@
           </p>
         </div>
       </div>
-      <form class="form-horizontal">
+      <form class="form-horizontal" onsubmit="return registerUser();">
         <fieldset>
 
         <!-- Form Name -->
@@ -84,29 +90,55 @@
         <div class="form-group">
           <label class="col-md-4 control-label" for="generate"></label>
           <div class="col-md-4">
-            <button id="generate" name="generate" type="button" class="btn btn-success">Generate Token</button>
+            <button id="generate" name="generate" class="btn btn-success">Generate Token</button>
           </div>
         </div>
 
         </fieldset>
       </form>
-      <div class="alert alert-success" role="alert">...</div>
-      <div class="alert alert-danger" role="alert">...</div>
+      <div class="alert alert-success" role="alert" style="display:none;">...</div>
+      <div class="alert alert-danger" role="alert" style="display:none;">...</div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
-      $(document).ready(function() {
-        console.log("Ready");
-        $('#generate').click(function() {
-          var payload = {
-            email: $('#email').val() + "@rose-hulman.edu",
-            password: $('#password').val(),
-            secret: $('#secret').val()
-          };
-          console.log(payload);
+      registerUser = function() {
+        var payload = {
+          email: $('#email').val() + "@rose-hulman.edu",
+          password: $('#password').val(),
+          secret: $('#secret').val()
+        };
+        var endpoint = location.protocol + '//' + location.host + "/api/register/";
+        var successAlert = $('.alert.alert-success');
+        var errorAlert = $('.alert.alert-danger');
+        successAlert.hide();
+        errorAlert.hide();
+        $.ajax({
+            type: "POST",
+            url: endpoint,
+            data: payload,
+            dataType: 'json'
+        })
+        .done(function(data) {
+          var msg = "<p>Token: <b class='wordwrap'>" + data.registryToken + "</b></p><p> Created for " + data.username + " at " + data.timestamp + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
+          successAlert.html(msg);
+          successAlert.show();
+        })
+        .fail(function(jq) {
+          console.log(jq)
+          var error = jq.responseJSON.error.message;
+          errorAlert.html("<p><b>Error:</b> " + error + "</p>");
+          errorAlert.show();
+        })
+        .always(function() {
+          $('#password').val('');
+          $('#secret').val('');
         });
-      });
+        setTimeout(function() {
+            $(document).scrollTop($(document).height());
+          }, 100);
+        return false;
+      };
     </script>
   </body>
 </html>

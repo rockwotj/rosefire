@@ -18,6 +18,10 @@ var extractEmailUsername = function(email) {
 
 var app = Express();
 
+app.get('/', function(req, res) {
+  res.sendFile(__dirname + "/public/index.html");    
+});
+
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({extended: false}));
 
@@ -30,7 +34,7 @@ app.use(function (req, res, next) {
     rose.authenticate(email, password, function (err, auth) {
       if (err || !auth) {
         console.log(email + " failed authentication!");
-        res.status(400).jsonp({error: "Invalid Rose-Hulman credentials", status: 400});
+        res.status(400).jsonp({error: {message: "Invalid Rose-Hulman credentials"}, status: 400});
         return; 
       }
       next();
@@ -45,7 +49,7 @@ app.use('/api/auth', function (req, res, next) {
   } else {
     jwt.verify(token, secrets.key, secrets, function (err, decoded) {
       if (err) {
-        res.status(400).jsonp({error: {message: 'Bad registryToken in request'}, status: 400});
+        res.status(400).jsonp({error: {message: 'Invalid registryToken in request'}, status: 400});
         return;
       }
       console.log("Registry token successfully decoded");

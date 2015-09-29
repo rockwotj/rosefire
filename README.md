@@ -17,7 +17,7 @@ timestamp: (String) an ISO formatted timestamp of when it was created.
 
 ### Endpoints
 
-The hostname for this endpoint has yet to be determined, but will be behind Rose-Hulman's Firewall. These endpoints will also support [jsonp](https://en.wikipedia.org/wiki/JSONP) requests for javascript clients by adding a 'callback' parameter to the query string. For example, `/api/register/` → `/api/register/?callback=foo`
+The hostname for this endpoint has yet to be determined, but will be behind Rose-Hulman's Firewall. These endpoints also support [jsonp](https://en.wikipedia.org/wiki/JSONP) requests for javascript clients by adding a 'callback' parameter to the query string. For example, `/api/register/` → `/api/register/?callback=foo`
 
 #### POST `/api/register/`
 
@@ -62,11 +62,11 @@ A post request to `/api/auth/` requires the following parameters in the JSON bod
 
 These are the options for the endpoint, more information can be found [here](https://github.com/firebase/firebase-token-generator-node#token-options).
 
-<b>expires</b>: (Integer) A timestamp of when the token is invalid.
+<style>ul{list-style-type: none;}</style>
 
-<b>notBefore</b>: (Integer) A timestamp of when the token should start being valid.
-
-<b>admin</b>: (Boolean) If true, then all security rules are disabled for this user.
+* <b>expires</b>: (Integer) A timestamp of when the token is invalid.
+* <b>notBefore</b>: (Integer) A timestamp of when the token should start being valid.
+* <b>admin</b>: (Boolean) If true, then all security rules are disabled for this user. This can only be true for the user who the token is registred with.
 
 This endpoint returns an object that looks like this
 

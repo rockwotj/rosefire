@@ -8,6 +8,7 @@
     "body-parser": "^1.14.0",
     "express": "^4.13.3",
     "firebase-token-generator": "^2.0.0",
+    "jsonwebtoken": "^5.0.5",
     "moment": "^2.10.6"
   },
   "devDependencies": {},

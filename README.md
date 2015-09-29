@@ -19,7 +19,7 @@ timestamp: (String) an ISO formatted timestamp of when it was created.
 
 The hostname for this endpoint has yet to be determined, but will be behind Rose-Hulman's Firewall. These endpoints will also eventually support [jsonp](https://en.wikipedia.org/wiki/JSONP) requests for javascript clients.
 
-#### POST `/api/register/` endpoint
+#### POST `/api/register/`
 
 A post request to `/api/register/` requires the following parameters in the JSON body of the request. The email and password is who the project will be registered under. 
 
@@ -31,15 +31,25 @@ A post request to `/api/register/` requires the following parameters in the JSON
 }
 ```
 
+This will then return a JSON object like the following.
+
+```json
+{
+  "username": "rockwotj",
+  "timestamp": "<ISO formatted timestamp>", 
+  "registryToken": "<YOUR REGISTRY TOKEN HERE>"
+}
+```
+
 Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin to false in the `/api/auth/` endpoint.
 
-#### POST `/api/auth/` endpoint
+#### POST `/api/auth/`
 
 A post request to `/api/auth/` requires the following parameters in the JSON body of the request. The options field and all of that object's fields are completely optional and not required.
 
 ```json
 {
-  "email": "username@rose-hulman.edu",
+  "email": "user@rose-hulman.edu",
   "password": "Pas$w0rd", 
   "registryToken": "<REGISTRY TOKEN HERE>",
   "options": {
@@ -62,9 +72,9 @@ This endpoint returns an object that looks like this
 
 ```json
 {
-  "token": "Auth token for rockwotj@rose-hulman.edu",
-  "timestamp": "ISO formatted timestamp",
-  "username": "rockwotj"
+  "token": "<Auth token for user@rose-hulman.edu>",
+  "timestamp": "<ISO formatted timestamp>",
+  "username": "user"
 }
 ```
 
@@ -106,9 +116,11 @@ npm install
 ./scripts/start
 ```
 
+Make sure nginx is set up over HTTPS to proxy to localhost:8080. The nginx configuration is included below.
+
 ### Secrets File
 
-In order to run this server, a `secrets.json` file is required. At minimum, it must have a key field that will be used as a symmetric key for the JWT that is the registry token. It may also include the following fields: subject, issuer, audience.
+In order to run this server, a `secrets.json` file is required. At minimum, it must have a 'key' field that will be used as a symmetric key for the JWT that is the registry token. It may also include the following fields: 'subject', 'issuer', and 'audience'.
 
 ### Nginx Configuration 
 

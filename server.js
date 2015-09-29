@@ -29,12 +29,12 @@ app.use(function (req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
   if (!email || !password ) {
-    res.status(400).jsonp({error: {message: 'Missing email or password in request'}, status: 400});
+    res.status(400).jsonp({error: 'Missing email or password in request', status: 400});
   } else {
     rose.authenticate(email, password, function (err, auth) {
       if (err || !auth) {
         console.log(email + " failed authentication!");
-        res.status(400).jsonp({error: {message: "Invalid Rose-Hulman credentials"}, status: 400});
+        res.status(400).jsonp({error: "Invalid Rose-Hulman credentials", status: 400});
         return; 
       }
       next();
@@ -45,11 +45,11 @@ app.use(function (req, res, next) {
 app.use('/api/auth', function (req, res, next) {
   var token = req.body.registryToken;
   if (!token) {
-    res.status(400).jsonp({error: {message: 'Missing registryToken in request'}, status: 400});
+    res.status(400).jsonp({error: 'Missing registryToken in request', status: 400});
   } else {
     jwt.verify(token, secrets.key, secrets, function (err, decoded) {
       if (err) {
-        res.status(400).jsonp({error: {message: 'Invalid registryToken in request'}, status: 400});
+        res.status(400).jsonp({error: 'Invalid registryToken in request', status: 400});
         return;
       }
       console.log("Registry token successfully decoded");
@@ -90,7 +90,7 @@ app.post('/api/auth', function (req, res) {
 app.use('/api/register', function (req, res, next) {
   var secret = req.body.secret;
   if (!secret) {
-    res.status(400).jsonp({error: {message: 'Missing firebase secret in request'}, status: 400});
+    res.status(400).jsonp({error: 'Missing firebase secret in request', status: 400});
   } else {
     next();
   }

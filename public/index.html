@@ -126,7 +126,7 @@
         })
         .fail(function(jq) {
           console.log(jq)
-          var error = jq.responseJSON.error.message;
+          var error = jq.responseJSON.error;
           errorAlert.html("<p><b>Error:</b> " + error + "</p>");
           errorAlert.show();
         })

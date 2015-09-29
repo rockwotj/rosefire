@@ -17,7 +17,7 @@ timestamp: (String) an ISO formatted timestamp of when it was created.
 
 ### Endpoints
 
-The hostname for this endpoint has yet to be determined, but will be behind Rose-Hulman's Firewall. These endpoints will also eventually support [jsonp](https://en.wikipedia.org/wiki/JSONP) requests for javascript clients.
+The hostname for this endpoint has yet to be determined, but will be behind Rose-Hulman's Firewall. These endpoints will also support [jsonp](https://en.wikipedia.org/wiki/JSONP) requests for javascript clients by adding a 'callback' parameter to the query string. For example, `/api/register/` → `/api/register/?callback=foo`
 
 #### POST `/api/register/`
 

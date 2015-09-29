@@ -30,7 +30,7 @@ app.use(function (req, res, next) {
     rose.authenticate(email, password, function(err, auth) {
       if (err || !auth) {
         console.log(email + " failed authentication!");
-        res.status(400).json({error: err.toString(), status: 400});
+        res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
         return; 
       }
       next();

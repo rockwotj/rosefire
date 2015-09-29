@@ -41,7 +41,7 @@ This will then return a JSON object like the following.
 }
 ```
 
-Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin to false in the `/api/auth/` endpoint.
+Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin to false in the `/api/auth/` endpoint. No one else is allowed to have admin access for security reasons.
 
 #### POST `/api/auth/`
 

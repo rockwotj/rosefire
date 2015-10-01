@@ -93,6 +93,8 @@ In the near future there will be client libraries available to more easily integ
 
 #### Java
 
+[![Release](https://img.shields.io/github/release/jitpack/gradle-simple.svg?label=gradle)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
+
 TODO
 
 #### Swift

@@ -93,7 +93,7 @@ In the near future there will be client libraries available to more easily integ
 
 #### Android
 
-[![Android](https://img.shields.io/github/release/rockwotj/rose-firebase-auth.svg?label=maven)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
+[![Android](https://img.shields.io/badge/android-v1.0.2-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
 
 TODO
 

@@ -108,7 +108,17 @@ public class RoseFirebaseAuth {
                 .put("password", mPassword)
                 .put("registryToken", mRegistryToken);
             if (mOptions != null) {
-                params.putPOJO("options", mOptions);
+                ObjectNode options = mapper.createObjectNode();
+                if (mOptions.isAdmin() != null) {
+                    options.put("admin", mOptions.isAdmin().booleanValue());
+                }
+                if (mOptions.getExpires() != null) {
+                    options.put("expires", mOptions.getExpires().intValue());
+                }
+                if (mOptions.getNotBefore() != null) {
+                    options.put("notBefore", mOptions.getNotBefore().intValue());
+                }
+                params.put("options", options);
             }
             Log.d(TAG, params.toString());
             String response = makeRequest("auth", params.toString());

@@ -91,13 +91,13 @@ If there is an error during a request for any endpoint then the response will lo
 
 In the near future there will be client libraries available to more easily integrate this into your code.
 
-#### Java
+#### Android
 
 [![Release](https://img.shields.io/github/release/jitpack/gradle-simple.svg?label=gradle)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
 
 TODO
 
-#### Swift
+#### iOS (Swift)
 
 TODO
 

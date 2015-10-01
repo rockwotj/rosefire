@@ -115,6 +115,24 @@ dependencies {
 }
 ```
 
+**Step 3:** Authenticate a Rose-Hulman User with Firebase
+
+```java
+Firebase myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
+RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(myFirebaseRef, "\<REGISTRY_TOKEN\>");
+roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase.AuthResultHandler() {
+    @Override
+    public void onAuthenticated(AuthData authData) {
+        // Show logged in UI
+    }
+
+    @Override
+    public void onAuthenticationError(FirebaseError firebaseError) {
+        // Show Login Error
+  }
+});
+```
+
 #### iOS (Swift)
 
 TODO

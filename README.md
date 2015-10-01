@@ -1,6 +1,6 @@
 # Rose-Hulman Firebase Authentication
 
-[![Server](https://img.shields.io/badge/server-v1.0.0-grey.svg)](https://github.com/rockwotj/rose-firebase-auth)
+[![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)](https://github.com/rockwotj/rose-firebase-auth)
 [![Android](https://img.shields.io/badge/android-v1.0.2-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).

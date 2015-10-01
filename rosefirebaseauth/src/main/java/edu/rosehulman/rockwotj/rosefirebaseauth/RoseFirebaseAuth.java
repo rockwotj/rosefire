@@ -19,6 +19,29 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+/**
+ *
+ * <p>The class that authenticates a Rose-Hulman User with Firebase for you.</p>
+ *
+ * <code>
+ * RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(fb, "\<REGISTRY_TOKEN\>");
+ * roseAuth.authWithRoseHulman("rockwotj@rose-hulman.ed", "Pa$sW0rd", new Firebase.AuthResultHandler() {
+ *      @Override
+ *      public void onAuthenticated(AuthData authData) {
+ *          // Show logged in UI
+ *      }
+ *
+ *      @Override
+ *      public void onAuthenticationError(FirebaseError firebaseError) {
+ *          // Show Login Error
+ *      }
+ * });
+ *
+ *
+ * </code>
+ *
+ *
+ */
 public class RoseFirebaseAuth {
 
     public static final String TAG = "RFA";
@@ -27,34 +50,98 @@ public class RoseFirebaseAuth {
     private final Firebase mFirebaseRef;
     private final String mRegistryToken;
 
+    /**
+     *
+     * <p>
+     * Create a RoseFirebaseAuthenticator with http://localhost:8080 as the
+     * the url that the server is running on.
+     * </p>
+     *
+     * @param repo The firebase repo to authenticate with.
+     * @param registryToken The registryToken for your app; generated from
+     *                      the server's registration page.
+     */
     public RoseFirebaseAuth(Firebase repo, String registryToken) {
         // Default to localhost on emulator's port 8080.
         this(repo, registryToken, "http://10.0.0.2:8080");
     }
 
+    /**
+     *
+     * <p>
+     * Create a RoseFirebaseAuthenticator with http://localhost:8080 as the
+     * the url that the server is running on.
+     * </p>
+     *
+     * @param repo The firebase repo to authenticate with.
+     * @param registryToken The registryToken for your app; generated from
+     *                      the server's registration page.
+     * @param authServiceUrl The url that the Rose authentication token is running at.
+     */
     public RoseFirebaseAuth(Firebase repo, String registryToken, String authServiceUrl) {
         mFirebaseRef = repo;
         mRegistryToken = registryToken;
         mRoseAuthServiceUrl = authServiceUrl + "/api/";
     }
 
+    /**
+     * <p>
+     * Authenticate the user with Rose-Hulman credentials given a Rose-Hulman email and password.
+     * </p>
+     * <p>
+     * This method is async and the result will be handled in the handler's callbacks
+     * </p>
+     * @param email A valid Rose-Hulman email.
+     * @param password A valid Rose-Hulman password for the email.
+     * @param handler A Firebase AuthResultHandler for callbacks.
+     */
     public void authWithRoseHulman(String email, String password, AuthResultHandler handler) {
         authWithRoseHulman(email, password, handler, null);
     }
 
+    /**
+     *<p>
+     * Authenticate the user with Rose-Hulman credentials given a Rose-Hulman email and password,
+     * with custom options for the auth token.
+     * </p>
+     * <p>
+     * This method is async and the result will be handled in the handler's callbacks
+     * </p>
+     * @param email A valid Rose-Hulman email.
+     * @param password A valid Rose-Hulman password for the email.
+     * @param handler A Firebase AuthResultHandler for callbacks.
+     * @param options The options for the auth token that is generated on the server.
+     */
     public void authWithRoseHulman(String email, String password, AuthResultHandler handler, TokenOptions options) {
         new RoseTokenFetcher(email, password, handler, options).execute();
     }
 
+    /**
+     * <p>The authentication token options that will be generated on the server. </p>
+     * <p>For more details see <a href="https://github.com/rockwotj/rose-firebase-auth#post-apiauth">
+     *     https://github.com/rockwotj/rose-firebase-auth#post-apiauth</a></p>
+     */
     public static class TokenOptions {
         private Integer expires;
         private Integer notBefore;
         private Boolean admin;
 
+        /**
+         * Create an empty options object
+         */
         public TokenOptions() {
             this(null, null, null);
         }
 
+        /**
+         * Create an options object with the given options.
+         *
+         * @param admin If true, then all security rules are disabled for this user.
+         *              This can only be true for the user who the token is registred with.
+         * @param expires A timestamp of when the token is invalid.
+         * @param notBefore A timestamp of when the token should start being valid.
+         *
+         */
         public TokenOptions(Integer expires, Integer notBefore, Boolean admin) {
             this.expires = expires;
             this.notBefore = notBefore;
@@ -65,6 +152,12 @@ public class RoseFirebaseAuth {
             return expires;
         }
 
+        /**
+         * Set when the auth token expires.
+         *
+         * @param expires A timestamp of when the token is invalid.
+         *
+         */
         public void setExpires(Integer expires) {
             this.expires = expires;
         }
@@ -73,10 +166,23 @@ public class RoseFirebaseAuth {
             return notBefore;
         }
 
+        /**
+         * Set when the auth token starts being valid.
+         *
+         * @param notBefore A timestamp of when the token should start being valid.
+         *
+         */
         public void setNotBefore(Integer notBefore) {
             this.notBefore = notBefore;
         }
 
+        /**
+         * Set if the user has all of the firebase options disabled.
+         *
+         * @param admin If true, then all security rules are disabled for this user.
+         *              This can only be true for the user who the token is registred with.
+         *
+         */
         public void setAdmin(Boolean admin) {
             this.admin = admin;
         }

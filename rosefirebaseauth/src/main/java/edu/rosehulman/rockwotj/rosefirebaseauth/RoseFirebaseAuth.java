@@ -46,7 +46,7 @@ public class RoseFirebaseAuth {
         new RoseTokenFetcher(email, password, handler, options).execute();
     }
 
-    public class TokenOptions {
+    public static class TokenOptions {
         private Integer expires;
         private Integer notBefore;
         private Boolean admin;

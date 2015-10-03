@@ -1,5 +1,8 @@
 # Rose-Hulman Firebase Authentication
 
+[![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)](https://github.com/rockwotj/rose-firebase-auth)
+[![Android](https://img.shields.io/badge/android-v1.0.2-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
+
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
 This README and documentation is a work in progress
@@ -89,13 +92,48 @@ If there is an error during a request for any endpoint then the response will lo
 
 ### Client Libraries
 
-In the near future there will be client libraries available to more easily integrate this into your code.
+There are client libraries available to more easily integrate this into your code.
 
-#### Java
+#### Android
 
-TODO
+[![Android](https://img.shields.io/badge/android-v1.0.2-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
 
-#### Swift
+**Step 1:** Add it in your build.gradle at the end of repositories:
+
+```gradle
+android {
+  repositories {
+    maven { url "https://jitpack.io" }
+  }
+}
+```
+
+**Step 2:** Add the dependency in the form:
+```gradle
+dependencies {
+  compile 'com.github.rockwotj:rose-firebase-auth:android-v1.0.2'
+}
+```
+
+**Step 3:** Authenticate a Rose-Hulman User with Firebase
+
+```java
+Firebase myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
+RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(myFirebaseRef, "\<REGISTRY_TOKEN\>");
+roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase.AuthResultHandler() {
+    @Override
+    public void onAuthenticated(AuthData authData) {
+        // Show logged in UI
+    }
+
+    @Override
+    public void onAuthenticationError(FirebaseError firebaseError) {
+        // Show Login Error
+  }
+});
+```
+
+#### iOS (Swift)
 
 TODO
 

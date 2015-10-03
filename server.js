@@ -6,7 +6,10 @@ var moment = require('moment');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 
-var ldapConfig = {url: 'ldap://rose-hulman.edu:389'}
+var ldapConfig = {
+  url: 'ldap://rose-hulman.edu:389',
+  baseDN: 'dc=rose-hulman,dc=edu'
+};
 var rose = new ActiveDirectory(ldapConfig);
 
 var secrets = JSON.parse(fs.readFileSync('secrets.json'));
@@ -54,7 +57,7 @@ app.use('/api/auth', function (req, res, next) {
       }
       console.log("Registry token successfully decoded");
       console.log(decoded);
-      req.body.secret = decoded.admin;
+      req.body.secret = decoded.secret;
       req.body.admin = decoded.admin;
       next();
     });
@@ -118,7 +121,7 @@ app.use(function(err, req, res, next) {
 });
 
 var port = 8080;
-var ip_address = '127.0.0.1';
+var ip_address = '0.0.0.0';
 
 var server = app.listen(port, ip_address, function () {
     console.log('Rose Firebase Auth service listening at http://localhost:%s', port);

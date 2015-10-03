@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.firebase.client.Firebase;
 import com.firebase.client.Firebase.AuthResultHandler;
+import com.firebase.client.FirebaseError;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,7 +45,8 @@ import java.util.Map;
  */
 public class RoseFirebaseAuth {
 
-    public static final String TAG = "RFA";
+    private static final String TAG = "RFA";
+    public static boolean DEBUG = false;
 
     private final String mRoseAuthServiceUrl;
     private final Firebase mFirebaseRef;
@@ -69,8 +71,7 @@ public class RoseFirebaseAuth {
     /**
      *
      * <p>
-     * Create a RoseFirebaseAuthenticator with http://localhost:8080 as the
-     * the url that the server is running on.
+     * Create a RoseFirebaseAuthenticator with a custom url that the server is running on.
      * </p>
      *
      * @param repo The firebase repo to authenticate with.
@@ -82,6 +83,9 @@ public class RoseFirebaseAuth {
         mFirebaseRef = repo;
         mRegistryToken = registryToken;
         mRoseAuthServiceUrl = authServiceUrl + "/api/";
+        if (DEBUG) {
+            Log.d(TAG, "URL base endpoint: " + mRoseAuthServiceUrl);
+        }
     }
 
     /**
@@ -113,6 +117,9 @@ public class RoseFirebaseAuth {
      * @param options The options for the auth token that is generated on the server.
      */
     public void authWithRoseHulman(String email, String password, AuthResultHandler handler, TokenOptions options) {
+        if (DEBUG) {
+            Log.d(TAG, "Authenticating user " + email);
+        }
         new RoseTokenFetcher(email, password, handler, options).execute();
     }
 
@@ -226,8 +233,10 @@ public class RoseFirebaseAuth {
                 }
                 params.put("options", options);
             }
-            Log.d(TAG, params.toString());
             String response = makeRequest("auth", params.toString());
+            if (DEBUG) {
+                Log.d(TAG, "Request response: " + response);
+            }
             if (response == null || response.isEmpty()) {
                 return null;
             }
@@ -244,13 +253,24 @@ public class RoseFirebaseAuth {
 
         @Override
         protected void onPostExecute(String roseAuthToken) {
-            mFirebaseRef.authWithCustomToken(roseAuthToken, mResultHandler);
+            if (DEBUG) {
+                Log.d(TAG, "roseAuthToken: " + roseAuthToken);
+            }
+            if (roseAuthToken != null) {
+                mFirebaseRef.authWithCustomToken(roseAuthToken, mResultHandler);
+            } else {
+                FirebaseError err = new FirebaseError(400, "Invalid credentials for rose-hulman.edu");
+                mResultHandler.onAuthenticationError(err);
+            }
         }
     }
 
     private String makeRequest(String endpoint, String json) {
         HttpURLConnection urlConnection;
         String url = mRoseAuthServiceUrl + endpoint + "/";
+        if (DEBUG) {
+            Log.d(TAG, "JSON data for request at " + url + " is: " + json);
+        }
         String data = json;
         String result = null;
         try {

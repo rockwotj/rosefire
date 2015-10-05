@@ -119,7 +119,7 @@ dependencies {
 
 ```java
 Firebase myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
-RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(myFirebaseRef, "\<REGISTRY_TOKEN\>");
+RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(myFirebaseRef, "<REGISTRY_TOKEN>");
 roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase.AuthResultHandler() {
     @Override
     public void onAuthenticated(AuthData authData) {

@@ -135,7 +135,15 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 #### iOS (Swift)
 
-TODO
+**Step 1:** Add rosefire as a dependancy in your cocoapods:
+
+pod 'rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :branch => 'ios'
+
+**Step 2:** Authenticate a Rose-Hulman User with Firebase:
+
+```ios
+
+```
 
 #### Javascript
 

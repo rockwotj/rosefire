@@ -32,12 +32,12 @@ app.use(function (req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
   if (!email || !password ) {
-    res.status(400).jsonp({error: 'Missing email or password in request', status: 400});
+    res.status(400).json({error: 'Missing email or password in request', status: 400});
   } else {
     rose.authenticate(email, password, function (err, auth) {
       if (err || !auth) {
         console.log(email + " failed authentication!");
-        res.status(400).jsonp({error: "Invalid Rose-Hulman credentials", status: 400});
+        res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
         return; 
       }
       next();
@@ -45,14 +45,20 @@ app.use(function (req, res, next) {
   }
 });
 
+app.use('/api/auth', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 app.use('/api/auth', function (req, res, next) {
   var token = req.body.registryToken;
   if (!token) {
-    res.status(400).jsonp({error: 'Missing registryToken in request', status: 400});
+    res.status(400).json({error: 'Missing registryToken in request', status: 400});
   } else {
     jwt.verify(token, secrets.key, secrets, function (err, decoded) {
       if (err) {
-        res.status(400).jsonp({error: 'Invalid registryToken in request', status: 400});
+        res.status(400).json({error: 'Invalid registryToken in request', status: 400});
         return;
       }
       console.log("Registry token successfully decoded");
@@ -87,13 +93,13 @@ app.post('/api/auth', function (req, res) {
   };
   var token = tokenGenerator.createToken(tokenData, tokenOptions);
   console.log("Generated token authenticating " + username);
-  res.jsonp({token: token, timestamp: tokenData.timestamp, username: tokenData.uid});
+  res.json({token: token, timestamp: tokenData.timestamp, username: tokenData.uid});
 });
 
 app.use('/api/register', function (req, res, next) {
   var secret = req.body.secret;
   if (!secret) {
-    res.status(400).jsonp({error: 'Missing firebase secret in request', status: 400});
+    res.status(400).json({error: 'Missing firebase secret in request', status: 400});
   } else {
     next();
   }
@@ -112,12 +118,12 @@ app.post('/api/register', function (req, res, next) {
 
   var token = jwt.sign(tokenData, secrets.key, secrets);
   console.log("Generated registryToken for " + username);
-  res.jsonp({registryToken: token, timestamp: tokenData.timestamp, username: username}); 
+  res.json({registryToken: token, timestamp: tokenData.timestamp, username: username}); 
 });
 
 app.use(function(err, req, res, next) {
   console.error(err.toString());
-  res.status(err.status).jsonp({error: err.toString(), status: err.status});
+  res.status(err.status).json({error: err.toString(), status: err.status});
 });
 
 var port = 8080;

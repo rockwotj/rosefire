@@ -1,4 +1,4 @@
-package edu.rosehulman.rockwotj.rosefirebaseauth;
+package edu.rosehulman.rosefire;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -25,7 +25,7 @@ import java.util.Map;
  * <p>The class that authenticates a Rose-Hulman User with Firebase for you.</p>
  *
  * <code>
- * RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(fb, "\<REGISTRY_TOKEN\>");
+ * RosefireAuth roseAuth = new RosefireAuth(fb, "REGISTRY_TOKEN");
  * roseAuth.authWithRoseHulman("rockwotj@rose-hulman.ed", "Pa$sW0rd", new Firebase.AuthResultHandler() {
  *      @Override
  *      public void onAuthenticated(AuthData authData) {
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  *
  */
-public class RoseFirebaseAuth {
+public class RosefireAuth {
 
     private static final String TAG = "RFA";
     public static boolean DEBUG = false;
@@ -63,7 +63,7 @@ public class RoseFirebaseAuth {
      * @param registryToken The registryToken for your app; generated from
      *                      the server's registration page.
      */
-    public RoseFirebaseAuth(Firebase repo, String registryToken) {
+    public RosefireAuth(Firebase repo, String registryToken) {
         // Default to localhost on emulator's port 8080.
         this(repo, registryToken, "http://10.0.0.2:8080");
     }
@@ -79,7 +79,7 @@ public class RoseFirebaseAuth {
      *                      the server's registration page.
      * @param authServiceUrl The url that the Rose authentication token is running at.
      */
-    public RoseFirebaseAuth(Firebase repo, String registryToken, String authServiceUrl) {
+    public RosefireAuth(Firebase repo, String registryToken, String authServiceUrl) {
         mFirebaseRef = repo;
         mRegistryToken = registryToken;
         mRoseAuthServiceUrl = authServiceUrl + "/api/";

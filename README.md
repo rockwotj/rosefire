@@ -1,7 +1,7 @@
 # Rose-Hulman Firebase Authentication
 
 [![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)](https://github.com/rockwotj/rose-firebase-auth)
-[![Android](https://img.shields.io/badge/android-v1.0.3-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.2)
+[![Android](https://img.shields.io/badge/android-v1.0.4-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.4)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -20,7 +20,7 @@ timestamp: (String) an ISO formatted timestamp of when it was created.
 
 ### Endpoints
 
-The hostname for this service has yet to be determined, but will be behind Rose-Hulman's Firewall. These endpoints also support [jsonp](https://en.wikipedia.org/wiki/JSONP) requests for javascript clients by adding a 'callback' parameter to the query string. For example, `/api/register/` → `/api/register/?callback=foo`
+The hostname for this service has yet to be determined, but will be behind Rose-Hulman's Firewall. My vote for a hostname is `rosefire.csse.rose-hulman.edu`.
 
 #### POST `/api/register/`
 
@@ -96,7 +96,7 @@ There are client libraries available to more easily integrate this into your cod
 
 #### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.2-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.3)
+[![Android](https://img.shields.io/badge/android-v1.0.4-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.4)
 
 **Step 1:** Add it in your build.gradle at the end of repositories:
 
@@ -111,7 +111,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rose-firebase-auth:android-v1.0.3'
+  compile 'com.github.rockwotj:rose-firebase-auth:android-v1.0.4'
 }
 ```
 
@@ -119,7 +119,7 @@ dependencies {
 
 ```java
 Firebase myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
-RoseFirebaseAuth roseAuth = new RoseFirebaseAuth(myFirebaseRef, "<REGISTRY_TOKEN>");
+RosefireAuth roseAuth = new RosefireAuth(myFirebaseRef, "<REGISTRY_TOKEN>");
 roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase.AuthResultHandler() {
     @Override
     public void onAuthenticated(AuthData authData) {

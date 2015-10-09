@@ -111,7 +111,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rose-firebase-auth:android-v1.0.4'
+  compile 'com.github.rockwotj:rosefire:android-v1.0.4'
 }
 ```
 

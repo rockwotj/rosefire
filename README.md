@@ -175,5 +175,26 @@ In order to run this server, a `secrets.json` file is required. At minimum, it m
 
 ### Nginx Configuration 
 
-TODO
+```
+server {
+       listen         80 default_server;
+       listen         [::]:80 default_server;
+       server_name    rosefire.csse.rose-hulman.edu;
+       return         301 https://$server_name$request_uri;
+}
 
+server {
+       listen              443 ssl default_server;
+       listen              [::]:443 ssl default_server;
+       server_name         rosefire.csse.rose-hulman.edu;
+       ssl_certificate     /etc/nginx/ssl/nginx.crt;
+       ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+       location / {
+            proxy_pass       http://localhost:8080;
+            proxy_set_header Host      $host;
+            proxy_set_header X-Real-IP $remote_addr;
+       }
+}
+
+```

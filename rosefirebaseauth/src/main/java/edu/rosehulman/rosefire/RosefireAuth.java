@@ -1,6 +1,7 @@
 package edu.rosehulman.rosefire;
 
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +56,7 @@ public class RosefireAuth {
     /**
      *
      * <p>
-     * Create a RoseFirebaseAuthenticator with http://localhost:8080 as the
+     * Create a RoseFirebaseAuthenticator with https://rosefire.csse.rose-hulman.edu as the
      * the url that the server is running on.
      * </p>
      *
@@ -64,8 +65,7 @@ public class RosefireAuth {
      *                      the server's registration page.
      */
     public RosefireAuth(Firebase repo, String registryToken) {
-        // Default to localhost on emulator's port 8080.
-        this(repo, registryToken, "http://10.0.0.2:8080");
+        this(repo, registryToken, "https://rosefire.csse.rose-hulman.edu");
     }
 
     /**
@@ -259,8 +259,12 @@ public class RosefireAuth {
             if (roseAuthToken != null) {
                 mFirebaseRef.authWithCustomToken(roseAuthToken, mResultHandler);
             } else {
-                FirebaseError err = new FirebaseError(400, "Invalid credentials for rose-hulman.edu");
-                mResultHandler.onAuthenticationError(err);
+                if (mResultHandler != null) {
+                    FirebaseError err = new FirebaseError(400, "Invalid credentials for rose-hulman.edu");
+                    mResultHandler.onAuthenticationError(err);
+                } else {
+                    mFirebaseRef.authWithCustomToken("", null);
+                }
             }
         }
     }

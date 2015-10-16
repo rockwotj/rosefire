@@ -127,7 +127,7 @@ app.use(function(err, req, res, next) {
 });
 
 var port = 8080;
-var ip_address = '0.0.0.0';
+var ip_address = '127.0.0.1';
 
 var server = app.listen(port, ip_address, function () {
     console.log('Rose Firebase Auth service listening at http://localhost:%s', port);

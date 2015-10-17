@@ -1,0 +1,17 @@
+PODS:
+  - Firebase (2.4.2)
+  - Rosefire (1.0.0):
+    - Firebase (>= 2.4.1)
+
+DEPENDENCIES:
+  - Rosefire (from `../`)
+
+EXTERNAL SOURCES:
+  Rosefire:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Firebase: 5e898ed5012c81d28ca5fae1113c6b61a172bc6d
+  Rosefire: adcf7f5f0dd3e21224914f14333f2957d8385661
+
+COCOAPODS: 0.39.0

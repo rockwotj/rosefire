@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = "Rosefire"
-  s.version          = "0.1.0"
-  s.summary          = "A short description of Rosefire."
+  s.version          = "1.0.0"
+  s.summary          = "Rosefire iOS & ObjC client library."
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -19,12 +19,10 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/Rosefire"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
+  s.homepage         = "https://github.com/rockwotj/Rosefire"
   s.license          = 'MIT'
   s.author           = { "rockwotj" => "rockwotj@gmail.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/Rosefire.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => "https://github.com/rockwotj/Rosefire.git", :tag => "ios-v#{s.version}" }
 
   s.platform     = :ios, '7.0'
   s.requires_arc = true
@@ -36,5 +34,5 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'Firebase', '>= 2.4.1'
 end

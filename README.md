@@ -21,7 +21,7 @@ timestamp: (String) an ISO formatted timestamp of when it was created.
 
 ### Endpoints
 
-The hostname for this service has yet to be determined, but will be behind Rose-Hulman's Firewall. My vote for a hostname is `rosefire.csse.rose-hulman.edu`.
+The hostname for this service is `rosefire.csse.rose-hulman.edu`, it is available outside Rose-Hulman's firewall. Please only use this software for good.
 
 #### POST `/api/register/`
 
@@ -159,12 +159,31 @@ TODO
 
 ## Production Setup
 
-This is a simple nodejs app that is reverse proxied by nginx. Here are the deployment instructions:
+This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. 
 
-```
-git clone https://github.com/rockwotj/rose-firebase-auth.git/
+### The Guv'nor
+
+Make sure the Guv'nor is set up. See the [latest deployment instructions](https://github.com/tableflip/guvnor#install) for help. Everything should already be set up on the rosefire server.
+
+### Deployment :shipit:
+
+Here are the deployment instructions if setting up the server from scratch 
+
+```shell
+cd ~
+git clone https://github.com/rockwotj/rosefire.git/
+cd rosefire
 npm install
-./scripts/start
+guv start server.js
+```
+
+In order to update the rosefire server, you just need to update the code from github and restart the process the server is running on.
+
+```shell
+cd ~/rosefire
+git pull origin server
+npm install # If there are new dependancies
+guv restart "rosefire node server"
 ```
 
 Make sure nginx is set up over HTTPS to proxy to localhost:8080. The nginx configuration is included below.

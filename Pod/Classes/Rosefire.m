@@ -14,19 +14,29 @@
 @end
 
 @implementation Firebase (FirebaseWithRoseHulmanAuth)
+
+- (void)reportInvalidCredentials:(void (^)(NSError *, FAuthData*))block {
+    NSDictionary *userInfo = @{
+                               NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid Rose-Hulman Credentials.", nil),
+                               NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Invalid username/password.", nil),
+                               NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString(@"Please check to make sure your credentials are corrent.", nil)
+                               };
+    NSError *err = [[NSError alloc] initWithDomain:@"rose-hulman.edu" code:400 userInfo:userInfo];
+    block(err, nil);
+}
+
 - (void)authWithRoseHulman:(NSString *)registryToken
                      email:(NSString *)email
                   password:(NSString *)password
        withCompletionBlock:(void (^)(NSError *, FAuthData *))block {
     [self authWithRoseHulman:registryToken email:email password:password withCompletionBlock:block withOptions:nil];
 }
+
 - (void)authWithRoseHulman:(NSString *)registryToken
                      email:(NSString *)email
                   password:(NSString *)password
        withCompletionBlock:(void (^)(NSError *, FAuthData *))block
                withOptions:(RosefireTokenOptions *)tokenOptions {
-    
-    NSError * err;
     
     NSMutableDictionary *params = [NSMutableDictionary
         dictionaryWithDictionary: @{ @"email"    : email,
@@ -69,17 +79,15 @@
             } else {
                 NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&connectionError];
                 NSString *token = [json objectForKey:@"token"];
-                [self authWithCustomToken:token withCompletionBlock:block];
+                if (token) {
+                    [self authWithCustomToken:token withCompletionBlock:block];
+                } else {
+                    [self reportInvalidCredentials:block];
+                }
             }
         }];
     } @catch (NSException *exception) {
-        NSDictionary *userInfo = @{
-                                   NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid Rose-Hulman Credentials.", nil),
-                                   NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"Invalid username/password.", nil),
-                                   NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString(@"Please check to make sure your credentials are corrent.", nil)
-                                   };
-        err = [[NSError alloc] initWithDomain:@"rose-hulman.edu" code:400 userInfo:userInfo];
-        block(err, nil);
+        [self reportInvalidCredentials:block];
     }
     
 }

@@ -141,15 +141,35 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 **Step 1:** Add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-use_frameworks!
-
 pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.0'
 ```
 
-**Step 2:** Authenticate a Rose-Hulman User with Firebase:
+Then run `pod install`
+
+**Step 2:** Import Firebase and Rosefire in your bridging header:
+
+```objc
+
+#import <Firebase/Firebase.h>
+#import <Rosefire/Rosefire.h>
+
+```
+
+**Step 3:** Authenticate a Rose-Hulman User with Firebase:
 
 ```swift
-// TODO
+import Firebase
+
+let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")
+myFirebaseRef.authWithRoseHulman("REGISTRY_TOKEN", email: "rockwotj@rose-hulman.edu", password: "Pa$sW0rd") {
+  (err, data) -> Void in
+    if err == nil {
+      // Show logged in UI
+    } else {
+      // Show login error
+    }
+}
+
 ```
 
 #### Javascript

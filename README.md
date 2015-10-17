@@ -167,24 +167,7 @@ Make sure the Guv'nor is set up. See the [latest deployment instructions](https:
 
 ### Deployment :shipit:
 
-Here are the deployment instructions if setting up the server from scratch 
-
-```shell
-cd ~
-git clone https://github.com/rockwotj/rosefire.git/
-cd rosefire
-npm install
-guv start server.js
-```
-
-In order to update the rosefire server, you just need to update the code from github and restart the process the server is running on.
-
-```shell
-cd ~/rosefire
-git pull origin server
-npm install # If there are new dependancies
-guv restart "rosefire node server"
-```
+To deploy the app, The Gov'nor can do it for you. See [this](https://github.com/tableflip/guvnor/blob/master/docs/apps.md#start-stop-restart-etc) for details. Don't forget to set the SECRETS_FILE environment variable!
 
 Make sure nginx is set up over HTTPS to proxy to localhost:8080. The nginx configuration is included below.
 

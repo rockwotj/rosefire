@@ -59,7 +59,7 @@
     }
     
      NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString: @"http://rosefire.csse.rose-hulman.edu/api/auth"]];
+    [request setURL:[NSURL URLWithString: @"https://rosefire.csse.rose-hulman.edu/api/auth"]];
     
     NSData *jsonData = [NSJSONSerialization  dataWithJSONObject:params options:0 error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData   encoding:NSUTF8StringEncoding];

@@ -12,7 +12,9 @@ var ldapConfig = {
 };
 var rose = new ActiveDirectory(ldapConfig);
 
-var secrets = JSON.parse(fs.readFileSync('secrets.json'));
+var secretsFile = process.env.SECRETS_FILE || 'secrets.json';
+
+var secrets = JSON.parse(fs.readFileSync(secretsFile));
 
 var extractEmailUsername = function(email) {
   var emailSplit = email.split("@");

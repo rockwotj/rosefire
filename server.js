@@ -12,7 +12,9 @@ var ldapConfig = {
 };
 var rose = new ActiveDirectory(ldapConfig);
 
-var secrets = JSON.parse(fs.readFileSync('secrets.json'));
+var secretsFile = process.env.SECRETS_FILE || 'secrets.json';
+
+var secrets = JSON.parse(fs.readFileSync(secretsFile));
 
 var extractEmailUsername = function(email) {
   var emailSplit = email.split("@");
@@ -45,7 +47,7 @@ app.use(function (req, res, next) {
   }
 });
 
-app.use('/api/auth', function(req, res, next) {
+app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -127,7 +129,7 @@ app.use(function(err, req, res, next) {
 });
 
 var port = 8080;
-var ip_address = '0.0.0.0';
+var ip_address = '127.0.0.1';
 
 var server = app.listen(port, ip_address, function () {
     console.log('Rose Firebase Auth service listening at http://localhost:%s', port);

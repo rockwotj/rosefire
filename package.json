@@ -2,7 +2,7 @@
   "name": "rose-firebase-auth",
   "version": "1.0.0",
   "description": "A Auth Server for Rose-Hulman Kerberos",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "activedirectory": "^0.7.0",
     "body-parser": "^1.14.0",

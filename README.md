@@ -1,8 +1,8 @@
 # Rose-Hulman Firebase Authentication
 
-[![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)](https://github.com/rockwotj/rosefire)
-[![Android](https://img.shields.io/badge/android-v1.0.4-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.4)
-[![iOS](https://img.shields.io/badge/ios-v1.0.0-blue.svg)](https://github.com/rockwotj/rosefire)
+![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
+[![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
+![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -21,7 +21,7 @@ timestamp: (String) an ISO formatted timestamp of when it was created.
 
 ### Endpoints
 
-The hostname for this service has yet to be determined, but will be behind Rose-Hulman's Firewall. My vote for a hostname is `rosefire.csse.rose-hulman.edu`.
+The hostname for this service is `rosefire.csse.rose-hulman.edu`, it is available outside Rose-Hulman's firewall. Please only use this software for good.
 
 #### POST `/api/register/`
 
@@ -97,7 +97,7 @@ There are client libraries available to more easily integrate this into your cod
 
 #### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.4-green.svg)](https://jitpack.io/#rockwotj/rose-firebase-auth/android-v1.0.4)
+[![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
 
 **Step 1:** Add it in your build.gradle at the end of repositories:
 
@@ -112,7 +112,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.4'
+  compile 'com.github.rockwotj:rosefire:android-v1.0.5'
 }
 ```
 
@@ -136,17 +136,39 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 #### iOS (Swift)
 
-[![iOS](https://img.shields.io/badge/ios-v1.0.0-blue.svg)](https://github.com/rockwotj/rosefire)
+![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
 **Step 1:** Add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-pod 'rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.0'
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.1'
 ```
 
-**Step 2:** Authenticate a Rose-Hulman User with Firebase:
+Then run `pod install`
 
-```ios
+**Step 2:** Import Firebase and Rosefire in your bridging header:
+
+```objc
+
+#import <Firebase/Firebase.h>
+#import <Rosefire/Rosefire.h>
+
+```
+
+**Step 3:** Authenticate a Rose-Hulman User with Firebase:
+
+```swift
+import Firebase
+
+let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")
+myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulman.edu", password: "Pa$sW0rd") {
+  (err, data) -> Void in
+    if err == nil {
+      // Show logged in UI
+    } else {
+      // Show login error
+    }
+}
 
 ```
 
@@ -157,13 +179,15 @@ TODO
 
 ## Production Setup
 
-This is a simple nodejs app that is reverse proxied by nginx. Here are the deployment instructions:
+This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. 
 
-```
-git clone https://github.com/rockwotj/rose-firebase-auth.git/
-npm install
-./scripts/start
-```
+### The Guv'nor
+
+Make sure the Guv'nor is set up. See the [latest deployment instructions](https://github.com/tableflip/guvnor#install) for help. Everything should already be set up on the rosefire server.
+
+### Deployment :shipit:
+
+To deploy the app, The Gov'nor can do it for you. See [this](https://github.com/tableflip/guvnor/blob/master/docs/apps.md#start-stop-restart-etc) for details. Don't forget to set the SECRETS_FILE environment variable!
 
 Make sure nginx is set up over HTTPS to proxy to localhost:8080. The nginx configuration is included below.
 
@@ -173,5 +197,26 @@ In order to run this server, a `secrets.json` file is required. At minimum, it m
 
 ### Nginx Configuration 
 
-TODO
+```
+server {
+       listen         80 default_server;
+       listen         [::]:80 default_server;
+       server_name    rosefire.csse.rose-hulman.edu;
+       return         301 https://$server_name$request_uri;
+}
 
+server {
+       listen              443 ssl default_server;
+       listen              [::]:443 ssl default_server;
+       server_name         rosefire.csse.rose-hulman.edu;
+       ssl_certificate     /etc/nginx/ssl/nginx.crt;
+       ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+       location / {
+            proxy_pass       http://localhost:8080;
+            proxy_set_header Host      $host;
+            proxy_set_header X-Real-IP $remote_addr;
+       }
+}
+
+```

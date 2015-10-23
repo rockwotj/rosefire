@@ -36,7 +36,7 @@
             (you can do this programmatically using the <code>/api/register/</code> endpoint).
             Do this by providing your Rose-Hulman username and password 
             (assuring that you're actually a Rose-Hulman student) along with your Firebase secret. 
-            Your secret can be found under the Secrets tab in our Firebase app's dashboard. 
+            Your secret can be found under the Secrets tab in your Firebase app's dashboard. 
           </p>
           <p>
             Once you've registered, you'll recieve a token that you <b>must</b> include when making requests
@@ -96,7 +96,6 @@
       <div class="alert alert-danger" role="alert" style="display:none;">...</div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
       registerUser = function() {
         var payload = {
@@ -129,10 +128,8 @@
         .always(function() {
           $('#password').val('');
           $('#secret').val('');
+          $(document).scrollTop($(document).height());
         });
-        setTimeout(function() {
-            $(document).scrollTop($(document).height());
-          }, 100);
         return false;
       };
     </script>

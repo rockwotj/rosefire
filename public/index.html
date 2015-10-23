@@ -11,12 +11,8 @@
   <body>
     <style>
       /* Inline styles because I'm too lazy to put them in seperate files & route that w/ express. */
-      .wordwrap { 
-        white-space: pre-wrap;      /* CSS3 */   
-        white-space: -moz-pre-wrap; /* Firefox */    
-        white-space: -pre-wrap;     /* Opera <7 */   
-        white-space: -o-pre-wrap;   /* Opera 7 */    
-        word-wrap: break-word;      /* IE */
+      textarea {
+        resize: none;
       }
     </style>
     <div class="jumbotron">
@@ -108,7 +104,7 @@
           password: $('#password').val(),
           secret: $('#secret').val()
         };
-        var endpoint = location.protocol + '//' + location.host + "/api/register/";
+        var endpoint = 'https://rosefire.csse.rose-hulman.edu/api/register/';
         var successAlert = $('.alert.alert-success');
         var errorAlert = $('.alert.alert-danger');
         successAlert.hide();
@@ -120,7 +116,7 @@
             dataType: 'json'
         })
         .done(function(data) {
-          var msg = "<p>Token: <b class='wordwrap'>" + data.registryToken + "</b></p><p> Created for " + data.username + " at " + data.timestamp + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
+          var msg = "<p>Token:</p><p><textarea class='form-control' rows='3'>" + data.registryToken + "</textarea></p><p> Created for " + data.username + " at " + data.timestamp + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
           successAlert.html(msg);
           successAlert.show();
         })

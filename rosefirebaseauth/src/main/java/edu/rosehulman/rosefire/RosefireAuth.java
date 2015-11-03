@@ -19,30 +19,32 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 /**
- *
  * <p>The class that authenticates a Rose-Hulman User with Firebase for you.</p>
- *
+ * <p>
  * <code>
  * RosefireAuth roseAuth = new RosefireAuth(fb, "REGISTRY_TOKEN");
  * roseAuth.authWithRoseHulman("rockwotj@rose-hulman.ed", "Pa$sW0rd", new Firebase.AuthResultHandler() {
- *      @Override
- *      public void onAuthenticated(AuthData authData) {
- *          // Show logged in UI
- *      }
  *
- *      @Override
- *      public void onAuthenticationError(FirebaseError firebaseError) {
- *          // Show Login Error
- *      }
+ * @Override public void onAuthenticated(AuthData authData) {
+ * // Show logged in UI
+ * }
+ * @Override public void onAuthenticationError(FirebaseError firebaseError) {
+ * // Show Login Error
+ * }
  * });
- *
- *
+ * <p>
+ * <p>
  * </code>
- *
- *
  */
 public class RosefireAuth {
 
@@ -54,13 +56,12 @@ public class RosefireAuth {
     private final String mRegistryToken;
 
     /**
-     *
      * <p>
      * Create a RoseFirebaseAuthenticator with https://rosefire.csse.rose-hulman.edu as the
      * the url that the server is running on.
      * </p>
      *
-     * @param repo The firebase repo to authenticate with.
+     * @param repo          The firebase repo to authenticate with.
      * @param registryToken The registryToken for your app; generated from
      *                      the server's registration page.
      */
@@ -69,14 +70,13 @@ public class RosefireAuth {
     }
 
     /**
-     *
      * <p>
      * Create a RoseFirebaseAuthenticator with a custom url that the server is running on.
      * </p>
      *
-     * @param repo The firebase repo to authenticate with.
-     * @param registryToken The registryToken for your app; generated from
-     *                      the server's registration page.
+     * @param repo           The firebase repo to authenticate with.
+     * @param registryToken  The registryToken for your app; generated from
+     *                       the server's registration page.
      * @param authServiceUrl The url that the Rose authentication token is running at.
      */
     public RosefireAuth(Firebase repo, String registryToken, String authServiceUrl) {
@@ -95,26 +95,28 @@ public class RosefireAuth {
      * <p>
      * This method is async and the result will be handled in the handler's callbacks
      * </p>
-     * @param email A valid Rose-Hulman email.
+     *
+     * @param email    A valid Rose-Hulman email.
      * @param password A valid Rose-Hulman password for the email.
-     * @param handler A Firebase AuthResultHandler for callbacks.
+     * @param handler  A Firebase AuthResultHandler for callbacks.
      */
     public void authWithRoseHulman(String email, String password, AuthResultHandler handler) {
         authWithRoseHulman(email, password, handler, null);
     }
 
     /**
-     *<p>
+     * <p>
      * Authenticate the user with Rose-Hulman credentials given a Rose-Hulman email and password,
      * with custom options for the auth token.
      * </p>
      * <p>
      * This method is async and the result will be handled in the handler's callbacks
      * </p>
-     * @param email A valid Rose-Hulman email.
+     *
+     * @param email    A valid Rose-Hulman email.
      * @param password A valid Rose-Hulman password for the email.
-     * @param handler A Firebase AuthResultHandler for callbacks.
-     * @param options The options for the auth token that is generated on the server.
+     * @param handler  A Firebase AuthResultHandler for callbacks.
+     * @param options  The options for the auth token that is generated on the server.
      */
     public void authWithRoseHulman(String email, String password, AuthResultHandler handler, TokenOptions options) {
         if (DEBUG) {
@@ -126,7 +128,7 @@ public class RosefireAuth {
     /**
      * <p>The authentication token options that will be generated on the server. </p>
      * <p>For more details see <a href="https://github.com/rockwotj/rose-firebase-auth#post-apiauth">
-     *     https://github.com/rockwotj/rose-firebase-auth#post-apiauth</a></p>
+     * https://github.com/rockwotj/rose-firebase-auth#post-apiauth</a></p>
      */
     public static class TokenOptions {
         private Integer expires;
@@ -143,11 +145,10 @@ public class RosefireAuth {
         /**
          * Create an options object with the given options.
          *
-         * @param admin If true, then all security rules are disabled for this user.
-         *              This can only be true for the user who the token is registred with.
-         * @param expires A timestamp of when the token is invalid.
+         * @param admin     If true, then all security rules are disabled for this user.
+         *                  This can only be true for the user who the token is registred with.
+         * @param expires   A timestamp of when the token is invalid.
          * @param notBefore A timestamp of when the token should start being valid.
-         *
          */
         public TokenOptions(Integer expires, Integer notBefore, Boolean admin) {
             this.expires = expires;
@@ -163,7 +164,6 @@ public class RosefireAuth {
          * Set when the auth token expires.
          *
          * @param expires A timestamp of when the token is invalid.
-         *
          */
         public void setExpires(Integer expires) {
             this.expires = expires;
@@ -177,7 +177,6 @@ public class RosefireAuth {
          * Set when the auth token starts being valid.
          *
          * @param notBefore A timestamp of when the token should start being valid.
-         *
          */
         public void setNotBefore(Integer notBefore) {
             this.notBefore = notBefore;
@@ -188,7 +187,6 @@ public class RosefireAuth {
          *
          * @param admin If true, then all security rules are disabled for this user.
          *              This can only be true for the user who the token is registred with.
-         *
          */
         public void setAdmin(Boolean admin) {
             this.admin = admin;
@@ -217,9 +215,9 @@ public class RosefireAuth {
         protected String doInBackground(Void... ignored) {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode params = mapper.createObjectNode()
-                .put("email", mEmail)
-                .put("password", mPassword)
-                .put("registryToken", mRegistryToken);
+                    .put("email", mEmail)
+                    .put("password", mPassword)
+                    .put("registryToken", mRegistryToken);
             if (mOptions != null) {
                 ObjectNode options = mapper.createObjectNode();
                 if (mOptions.isAdmin() != null) {
@@ -270,7 +268,7 @@ public class RosefireAuth {
     }
 
     private String makeRequest(String endpoint, String json) {
-        HttpURLConnection urlConnection;
+        HttpsURLConnection urlConnection;
         String url = mRoseAuthServiceUrl + endpoint + "/";
         if (DEBUG) {
             Log.d(TAG, "JSON data for request at " + url + " is: " + json);
@@ -278,7 +276,31 @@ public class RosefireAuth {
         String data = json;
         String result = null;
         try {
-            urlConnection = (HttpURLConnection) ((new URL(url).openConnection()));
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+
+                        public void checkClientTrusted(
+                                java.security.cert.X509Certificate[] certs, String authType) {
+                        }
+
+                        public void checkServerTrusted(
+                                java.security.cert.X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            try {
+                SSLContext sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (GeneralSecurityException e) {
+            }
+            urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
             urlConnection.setDoOutput(true);
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept", "application/json");

@@ -8,6 +8,10 @@ This is a simple service that authenticates Rose-Hulman students via Kerberos Lo
 
 This README and documentation is a work in progress
 
+## [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read)
+
+Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu) then skip down to (Client Libraries)[#client-libraries] to see how to integrate this into your Firebase app.
+
 ## Production Use
 
 Tokens recieved from this service will have the following fields, which can accessed in your firebase rules. More information about this can be found in [Firebase's Custom Auth Documentation](https://www.firebase.com/docs/web/guide/login/custom.html).

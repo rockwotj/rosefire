@@ -134,7 +134,7 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 });
 ```
 
-#### iOS (Swift)
+#### iOS
 
 ![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
@@ -145,6 +145,8 @@ pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios
 ```
 
 Then run `pod install`
+
+##### Swift
 
 **Step 2:** Import Firebase and Rosefire in your bridging header:
 
@@ -171,6 +173,10 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulma
 }
 
 ```
+
+##### Objective-C 
+
+TODO
 
 #### Javascript
 

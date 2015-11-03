@@ -93,7 +93,7 @@ If there is an error during a request for any endpoint then the response will lo
 
 ## Client Libraries
 
-There are client libraries available to more easily integrate this into your code.
+There are client libraries available to more easily integrate this into your code or read this if you're a TL;DR kind of person.
 
 ### Android
 

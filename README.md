@@ -8,7 +8,9 @@ This is a simple service that authenticates Rose-Hulman students via Kerberos Lo
 
 This README and documentation is a work in progress
 
-## [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read)
+## TL;DR
+
+Start here if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person, otherwise, start reading about the endpoints.
 
 Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu) then skip down to (Client Libraries)[#client-libraries] to see how to integrate this into your Firebase app.
 
@@ -97,7 +99,7 @@ If there is an error during a request for any endpoint then the response will lo
 
 ## Client Libraries
 
-There are client libraries available to more easily integrate this into your code or read this if you're a TL;DR kind of person.
+There are client libraries available to more easily integrate this into your code or read this if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person.
 
 ### Android
 

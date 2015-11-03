@@ -1,7 +1,7 @@
 # Rose-Hulman Firebase Authentication
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
+[![Android](https://img.shields.io/badge/android-v1.1.0-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.1.0)
 ![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
@@ -103,7 +103,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
+[![Android](https://img.shields.io/badge/android-v1.1.0-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.1.0)
 
 **Step 1:** Add it in your build.gradle at the end of repositories:
 
@@ -118,7 +118,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.5'
+  compile 'com.github.rockwotj:rosefire:android-v1.1.0'
 }
 ```
 

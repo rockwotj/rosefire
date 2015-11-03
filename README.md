@@ -91,11 +91,11 @@ If there is an error during a request for any endpoint then the response will lo
 }
 ```
 
-### Client Libraries
+## Client Libraries
 
 There are client libraries available to more easily integrate this into your code.
 
-#### Android
+### Android
 
 [![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
 
@@ -134,11 +134,11 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 });
 ```
 
-#### iOS
+### iOS
 
 ![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
-**Step 1:** Add rosefire as a dependancy in your cocoapods:
+**Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
 ```ruby
 pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.1'
@@ -146,7 +146,7 @@ pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios
 
 Then run `pod install`
 
-##### Swift
+#### Swift Projects
 
 **Step 2:** Import Firebase and Rosefire in your bridging header:
 
@@ -174,11 +174,11 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulma
 
 ```
 
-##### Objective-C 
+#### Objective-C Projects
 
 TODO
 
-#### Javascript
+### Javascript
 
 TODO
 

@@ -63,8 +63,7 @@ app.use('/api/auth', function (req, res, next) {
         res.status(400).json({error: 'Invalid registryToken in request', status: 400});
         return;
       }
-      console.log("Registry token successfully decoded");
-      console.log(decoded);
+      console.log("Registry token successfully decoded for " + decoded.admin + "'s app");
       req.body.secret = decoded.secret;
       req.body.admin = decoded.admin;
       next();

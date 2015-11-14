@@ -25,5 +25,4 @@ android {
 
 dependencies {
     compile 'com.firebase:firebase-client-android:2.4.0+'
-    androidTestCompile 'junit:junit:4.12'
 }

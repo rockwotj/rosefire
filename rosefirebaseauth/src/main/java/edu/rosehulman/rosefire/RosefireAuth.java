@@ -1,7 +1,7 @@
 package edu.rosehulman.rosefire;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,14 +12,23 @@ import com.firebase.client.FirebaseError;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
@@ -27,6 +36,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import edu.rosehulman.rockwotj.rosefirebaseauth.R;
 
 /**
  * <p>The class that authenticates a Rose-Hulman User with Firebase for you.</p>
@@ -276,32 +287,105 @@ public class RosefireAuth {
         String data = json;
         String result = null;
         try {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
+
+            Field firebaseContext = com.firebase.client.core.Context.class.getField("androidContext");
+            firebaseContext.setAccessible(true);
+            Context context = (Context) firebaseContext.get(null);
+
+            InputStream is = context.getResources().openRawResource(R.raw.rosefire);
+            store.load(is, "rosefire".toCharArray());
+            is.close();
+
+
+            final Certificate rootca = store.getCertificate("rosefire.csse.rose-hulman.edu");
+
+            // Turn it to X509 format.
+            is = new ByteArrayInputStream(rootca.getEncoded());
+            X509Certificate x509ca = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(is);
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (null == x509ca) {
+                throw new CertificateException("Embedded SSL certificate has expired.");
+            }
+
+            // Check the CA's validity.
+            x509ca.checkValidity();
+
+            // Accepted CA is only the one installed in the store.
+            final X509Certificate[] acceptedIssuers = new X509Certificate[]{x509ca};
+
+            TrustManager[] trustManagers = new TrustManager[]{
                     new X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new X509Certificate[0];
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                         }
 
-                        public void checkClientTrusted(
-                                java.security.cert.X509Certificate[] certs, String authType) {
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                            Exception error = null;
+
+                            if (null == chain || 0 == chain.length) {
+                                error = new CertificateException("Certificate chain is invalid.");
+                            } else if (null == authType || 0 == authType.length()) {
+                                error = new CertificateException("Authentication type is invalid.");
+                            } else {
+                                if (DEBUG)
+                                    Log.i(TAG, "Chain includes " + chain.length + " certificates.");
+                                try {
+                                    for (X509Certificate cert : chain) {
+                                        if (DEBUG) {
+                                            Log.i(TAG, "Server Certificate Details:");
+                                            Log.i(TAG, "---------------------------");
+                                            Log.i(TAG, "IssuerDN: " + cert.getIssuerDN().toString());
+                                            Log.i(TAG, "SubjectDN: " + cert.getSubjectDN().toString());
+                                            Log.i(TAG, "Serial Number: " + cert.getSerialNumber());
+                                            Log.i(TAG, "Version: " + cert.getVersion());
+                                            Log.i(TAG, "Not before: " + cert.getNotBefore().toString());
+                                            Log.i(TAG, "Not after: " + cert.getNotAfter().toString());
+                                            Log.i(TAG, "---------------------------");
+                                        }
+                                        // Make sure that it hasn't expired.
+                                        cert.checkValidity();
+
+                                        // Verify the certificate's public key chain.
+                                        cert.verify(rootca.getPublicKey());
+                                    }
+                                } catch (InvalidKeyException e) {
+                                    error = e;
+                                } catch (NoSuchAlgorithmException e) {
+                                    error = e;
+                                } catch (NoSuchProviderException e) {
+                                    error = e;
+                                } catch (SignatureException e) {
+                                    error = e;
+                                }
+                            }
+                            if (null != error) {
+                                Log.e("GALE", "Certificate error", error);
+                                throw new CertificateException(error);
+                            }
                         }
 
-                        public void checkServerTrusted(
-                                java.security.cert.X509Certificate[] certs, String authType) {
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return acceptedIssuers;
                         }
                     }
             };
+            sc.init(null, trustManagers, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (GeneralSecurityException e) {
+        }
+        urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
 
-            // Install the all-trusting trust manager
-            try {
-                SSLContext sc = SSLContext.getInstance("SSL");
-                sc.init(null, trustAllCerts, new java.security.SecureRandom());
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            } catch (GeneralSecurityException e) {
-            }
-            urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
-            urlConnection.setDoOutput(true);
+        urlConnection.setDoOutput(true);
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept", "application/json");
             urlConnection.setRequestMethod("POST");
@@ -325,9 +409,8 @@ public class RosefireAuth {
 
             bufferedReader.close();
             result = sb.toString();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;

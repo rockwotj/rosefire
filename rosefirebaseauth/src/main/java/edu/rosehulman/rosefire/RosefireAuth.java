@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.firebase.client.Firebase;
 import com.firebase.client.Firebase.AuthResultHandler;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.FirebaseException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -214,6 +215,7 @@ public class RosefireAuth {
         private final String mPassword;
         private final AuthResultHandler mResultHandler;
         private final TokenOptions mOptions;
+        private RosefireException error;
 
         public RoseTokenFetcher(String email, String password, AuthResultHandler handler, TokenOptions options) {
             mEmail = email;
@@ -242,7 +244,15 @@ public class RosefireAuth {
                 }
                 params.put("options", options);
             }
-            String response = makeRequest("auth", params.toString());
+
+            String response;
+            try {
+                response = makeRequest("auth", params.toString());
+            } catch (RosefireException e) {
+                error = e;
+                return null;
+            }
+
             if (DEBUG) {
                 Log.d(TAG, "Request response: " + response);
             }
@@ -269,7 +279,7 @@ public class RosefireAuth {
                 mFirebaseRef.authWithCustomToken(roseAuthToken, mResultHandler);
             } else {
                 if (mResultHandler != null) {
-                    FirebaseError err = new FirebaseError(400, "Invalid credentials for rose-hulman.edu");
+                    FirebaseError err = new FirebaseError(error.getStatusCode(), error.getMessage());
                     mResultHandler.onAuthenticationError(err);
                 } else {
                     mFirebaseRef.authWithCustomToken("", null);
@@ -278,140 +288,174 @@ public class RosefireAuth {
         }
     }
 
-    private String makeRequest(String endpoint, String json) {
-        HttpsURLConnection urlConnection;
+    private class RosefireException extends Exception {
+        private final int statusCode;
+        private final String message;
+
+        RosefireException(int statusCode, String message) {
+
+            this.statusCode = statusCode;
+            this.message = message;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        public int getStatusCode() {
+            return statusCode;
+        }
+    }
+
+    private String makeRequest(String endpoint, String json) throws RosefireException {
+        HttpsURLConnection urlConnection = null;
         String url = mRoseAuthServiceUrl + endpoint + "/";
         if (DEBUG) {
             Log.d(TAG, "JSON data for request at " + url + " is: " + json);
         }
         String data = json;
-        String result = null;
+        String result;
         try {
-        try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
-
-            Field firebaseContext = com.firebase.client.core.Context.class.getField("androidContext");
-            firebaseContext.setAccessible(true);
-            Context context = (Context) firebaseContext.get(null);
-
-            InputStream is = context.getResources().openRawResource(R.raw.rosefire);
-            store.load(is, "rosefire".toCharArray());
-            is.close();
-
-
-            final Certificate rootca = store.getCertificate("rosefire.csse.rose-hulman.edu");
-
-            // Turn it to X509 format.
-            is = new ByteArrayInputStream(rootca.getEncoded());
-            X509Certificate x509ca = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(is);
             try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                SSLContext sc = SSLContext.getInstance("SSL");
+                KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
+                X509Certificate x509ca;
+                final Certificate rootca;
+                try {
+                    Field firebaseContext = com.firebase.client.core.Context.class.getDeclaredField("androidContext");
+                    firebaseContext.setAccessible(true);
+                    Context context = (Context) firebaseContext.get(null);
 
-            if (null == x509ca) {
-                throw new CertificateException("Embedded SSL certificate has expired.");
-            }
+                    InputStream is = context.getResources().openRawResource(R.raw.rosefire);
+                    store.load(is, "rosefire".toCharArray());
+                    is.close();
+                    rootca = store.getCertificate("rosefire.csse.rose-hulman.edu");
 
-            // Check the CA's validity.
-            x509ca.checkValidity();
+                    // Turn it to X509 format.
+                    is = new ByteArrayInputStream(rootca.getEncoded());
+                    x509ca = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(is);
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    Log.e("RFA", "YOU MUST SET THE FIREBASE CONTEXT!!");
+                    throw new RosefireException(0, "SET THE FIREBASE CONTEXT!");
+                }
 
-            // Accepted CA is only the one installed in the store.
-            final X509Certificate[] acceptedIssuers = new X509Certificate[]{x509ca};
+                if (null == x509ca) {
+                    throw new CertificateException("Embedded SSL certificate has expired.");
+                }
 
-            TrustManager[] trustManagers = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+                // Check the CA's validity.
+                x509ca.checkValidity();
 
-                        @Override
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                            Exception error = null;
+                // Accepted CA is only the one installed in the store.
+                final X509Certificate[] acceptedIssuers = new X509Certificate[]{x509ca};
 
-                            if (null == chain || 0 == chain.length) {
-                                error = new CertificateException("Certificate chain is invalid.");
-                            } else if (null == authType || 0 == authType.length()) {
-                                error = new CertificateException("Authentication type is invalid.");
-                            } else {
-                                if (DEBUG)
-                                    Log.i(TAG, "Chain includes " + chain.length + " certificates.");
-                                try {
-                                    for (X509Certificate cert : chain) {
-                                        if (DEBUG) {
-                                            Log.i(TAG, "Server Certificate Details:");
-                                            Log.i(TAG, "---------------------------");
-                                            Log.i(TAG, "IssuerDN: " + cert.getIssuerDN().toString());
-                                            Log.i(TAG, "SubjectDN: " + cert.getSubjectDN().toString());
-                                            Log.i(TAG, "Serial Number: " + cert.getSerialNumber());
-                                            Log.i(TAG, "Version: " + cert.getVersion());
-                                            Log.i(TAG, "Not before: " + cert.getNotBefore().toString());
-                                            Log.i(TAG, "Not after: " + cert.getNotAfter().toString());
-                                            Log.i(TAG, "---------------------------");
+                TrustManager[] trustManagers = new TrustManager[]{
+                        new X509TrustManager() {
+                            @Override
+                            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                            }
+
+                            @Override
+                            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                                Exception error = null;
+
+                                if (null == chain || 0 == chain.length) {
+                                    error = new CertificateException("Certificate chain is invalid.");
+                                } else if (null == authType || 0 == authType.length()) {
+                                    error = new CertificateException("Authentication type is invalid.");
+                                } else {
+                                    if (DEBUG)
+                                        Log.i(TAG, "Chain includes " + chain.length + " certificates.");
+                                    try {
+                                        for (X509Certificate cert : chain) {
+                                            if (DEBUG) {
+                                                Log.i(TAG, "Server Certificate Details:");
+                                                Log.i(TAG, "---------------------------");
+                                                Log.i(TAG, "IssuerDN: " + cert.getIssuerDN().toString());
+                                                Log.i(TAG, "SubjectDN: " + cert.getSubjectDN().toString());
+                                                Log.i(TAG, "Serial Number: " + cert.getSerialNumber());
+                                                Log.i(TAG, "Version: " + cert.getVersion());
+                                                Log.i(TAG, "Not before: " + cert.getNotBefore().toString());
+                                                Log.i(TAG, "Not after: " + cert.getNotAfter().toString());
+                                                Log.i(TAG, "---------------------------");
+                                            }
+                                            // Make sure that it hasn't expired.
+                                            cert.checkValidity();
+
+                                            // Verify the certificate's public key chain.
+                                            cert.verify(rootca.getPublicKey());
                                         }
-                                        // Make sure that it hasn't expired.
-                                        cert.checkValidity();
-
-                                        // Verify the certificate's public key chain.
-                                        cert.verify(rootca.getPublicKey());
+                                    } catch (InvalidKeyException e) {
+                                        error = e;
+                                    } catch (NoSuchAlgorithmException e) {
+                                        error = e;
+                                    } catch (NoSuchProviderException e) {
+                                        error = e;
+                                    } catch (SignatureException e) {
+                                        error = e;
                                     }
-                                } catch (InvalidKeyException e) {
-                                    error = e;
-                                } catch (NoSuchAlgorithmException e) {
-                                    error = e;
-                                } catch (NoSuchProviderException e) {
-                                    error = e;
-                                } catch (SignatureException e) {
-                                    error = e;
+                                }
+                                if (null != error) {
+                                    Log.e("GALE", "Certificate error", error);
+                                    throw new CertificateException(error);
                                 }
                             }
-                            if (null != error) {
-                                Log.e("GALE", "Certificate error", error);
-                                throw new CertificateException(error);
+
+                            @Override
+                            public X509Certificate[] getAcceptedIssuers() {
+                                return acceptedIssuers;
                             }
                         }
+                };
+                sc.init(null, trustManagers, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (GeneralSecurityException e) {
+            }
+            try {
+                urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
 
-                        @Override
-                        public X509Certificate[] getAcceptedIssuers() {
-                            return acceptedIssuers;
-                        }
-                    }
-            };
-            sc.init(null, trustManagers, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (GeneralSecurityException e) {
-        }
-        urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestProperty("Accept", "application/json");
+                urlConnection.setRequestMethod("POST");
+                urlConnection.connect();
 
-        urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setRequestProperty("Accept", "application/json");
-            urlConnection.setRequestMethod("POST");
-            urlConnection.connect();
+                //TODO: Use com.fasterxml.jackson for serialization instead of bufferedReader/Writer
+                OutputStream outputStream = urlConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                writer.write(data);
+                writer.close();
+                outputStream.close();
 
-            //TODO: Use com.fasterxml.jackson for serialization instead of bufferedReader/Writer
-            OutputStream outputStream = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            writer.write(data);
-            writer.close();
-            outputStream.close();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
 
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+                String line;
+                StringBuilder sb = new StringBuilder();
 
-            String line;
-            StringBuilder sb = new StringBuilder();
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
 
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
+                bufferedReader.close();
+                result = sb.toString();
+            } catch (Exception e) {
+                int code = 0;
+                try {
+                    code = urlConnection.getResponseCode();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                throw new RosefireException(code, code == 400 ? "Invalid Rose-Hulman Credentials!" : "Network error!");
             }
 
-            bufferedReader.close();
-            result = sb.toString();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (RosefireException e) {
+            throw e;
         }
         return result;
     }

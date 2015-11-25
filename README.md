@@ -166,8 +166,6 @@ Then run `pod install`
 **Step 3:** Authenticate a Rose-Hulman User with Firebase:
 
 ```swift
-import Firebase
-
 let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")
 myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulman.edu", password: "Pa$sW0rd") {
   (err, data) -> Void in

@@ -13,6 +13,60 @@
 
 @end
 
+typedef void(^CompletionBlock)(NSData *data,
+                               NSError *connectionError);
+
+@interface RosefireConnectionDelegate : NSObject<NSURLConnectionDelegate>
+
+@property(strong, nonatomic) NSMutableData *responseData;
+@property(strong, nonatomic) CompletionBlock resultBlock;
+
+@end
+
+@implementation RosefireConnectionDelegate
+
+- (id) initWithCompletionHandler:(void (^)(NSData *data,
+                                           NSError *connectionError))handler {
+    self = [super init];
+    if (self != nil) {
+        self.resultBlock = handler;
+    }
+    return self;
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    if([challenge.protectionSpace.host isEqualToString:@"rosefire.csse.rose-hulman.edu"]) {
+        [challenge.sender useCredential: [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+    }
+}
+
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    return YES;
+}
+
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse *)response
+{
+    NSLog(@"Did Receive Response %@", response);
+    self.responseData = [[NSMutableData alloc]init];
+}
+- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)data
+{
+    //NSLog(@"Did Receive Data %@", data);
+    [self.responseData appendData:data];
+}
+- (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error
+{
+    NSLog(@"Did Fail");
+    self.resultBlock(nil, error);
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSLog(@"Did Finish");
+    self.resultBlock(self.responseData, nil);
+}
+
+@end
+
 @implementation Firebase (FirebaseWithRoseHulmanAuth)
 
 - (void)reportInvalidCredentials:(void (^)(NSError *, FAuthData*))block {
@@ -60,7 +114,7 @@
     
      NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString: @"https://rosefire.csse.rose-hulman.edu/api/auth"]];
-    
+
     NSData *jsonData = [NSJSONSerialization  dataWithJSONObject:params options:0 error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData   encoding:NSUTF8StringEncoding];
     NSString *loginDataLength = [NSString stringWithFormat:@"%lu",(unsigned long)[jsonString length]];
@@ -71,9 +125,10 @@
     [request setValue:loginDataLength forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:jsonData];
 
+
+    
     @try {
-        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-        [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *_Nullable response, NSData *_Nullable data, NSError *_Nullable connectionError) {
+        RosefireConnectionDelegate *delegate =[[RosefireConnectionDelegate alloc] initWithCompletionHandler: ^(NSData *_Nullable data, NSError *_Nullable connectionError) {
             if (connectionError) {
                 block(connectionError, nil);
             } else {
@@ -86,6 +141,8 @@
                 }
             }
         }];
+        NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:YES];
+        [conn start];
     } @catch (NSException *exception) {
         [self reportInvalidCredentials:block];
     }

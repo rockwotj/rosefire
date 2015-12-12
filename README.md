@@ -10,7 +10,7 @@ This README and documentation is a work in progress
 
 ## TL;DR
 
-Start here if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person, otherwise, start reading about the endpoints.
+Start [here](#client-libraries) if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person, otherwise, start reading about the endpoints.
 
 Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu) then skip down to [Client Libraries](https://github.com/rockwotj/rosefire/#client-libraries) to see how to integrate this into your Firebase app.
 

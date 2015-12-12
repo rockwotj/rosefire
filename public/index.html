@@ -103,7 +103,7 @@
           password: $('#password').val(),
           secret: $('#secret').val()
         };
-        var endpoint = 'https://rosefire.csse.rose-hulman.edu/api/register/';
+        var endpoint = '/api/register/';
         var successAlert = $('.alert.alert-success');
         var errorAlert = $('.alert.alert-danger');
         successAlert.hide();
@@ -115,9 +115,20 @@
             dataType: 'json'
         })
         .done(function(data) {
-          var msg = "<p>Token:</p><p><textarea class='form-control' rows='3'>" + data.registryToken + "</textarea></p><p> Created for " + data.username + " at " + data.timestamp + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
+          var msg = "<p>Token:</p><p><textarea class='form-control copyable' rows='3'>" + data.registryToken + "</textarea></p><p> <button class='btn btn-default copier'>Copy</button> Created for " + data.username + " at " + data.timestamp + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
           successAlert.html(msg);
           successAlert.show();
+          $('.copier').click(function(event) {
+            var copyTextarea = $('.copyable');
+            copyTextarea.select();
+            try {
+              var successful = document.execCommand('copy');
+              var msg = successful ? 'successful' : 'unsuccessful';
+              console.log('Copying text command was ' + msg);
+            } catch (err) {
+              console.log('Oops, unable to copy');
+            }
+          });
         })
         .fail(function(jq) {
           console.log(jq)

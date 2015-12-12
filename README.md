@@ -1,12 +1,18 @@
 # Rose-Hulman Firebase Authentication
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
+[![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
 ![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
 This README and documentation is a work in progress
+
+## TL;DR
+
+Start [here](#client-libraries) if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person, otherwise, start reading about the endpoints.
+
+Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu) then skip down to [Client Libraries](https://github.com/rockwotj/rosefire/#client-libraries) to see how to integrate this into your Firebase app.
 
 ## Production Use
 
@@ -91,13 +97,13 @@ If there is an error during a request for any endpoint then the response will lo
 }
 ```
 
-### Client Libraries
+## Client Libraries
 
-There are client libraries available to more easily integrate this into your code.
+There are client libraries available to more easily integrate this into your code or read this if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person.
 
-#### Android
+### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.5-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.5)
+[![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
 
 **Step 1:** Add it in your build.gradle at the end of repositories:
 
@@ -112,7 +118,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.5'
+  compile 'com.github.rockwotj:rosefire:android-v1.0.6'
 }
 ```
 
@@ -134,17 +140,19 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 });
 ```
 
-#### iOS (Swift)
+### iOS
 
 ![iOS](https://img.shields.io/badge/ios-v1.0.1-blue.svg)
 
-**Step 1:** Add rosefire as a dependancy in your cocoapods:
+**Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.1'
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.2'
 ```
 
 Then run `pod install`
+
+#### Swift Projects
 
 **Step 2:** Import Firebase and Rosefire in your bridging header:
 
@@ -158,8 +166,6 @@ Then run `pod install`
 **Step 3:** Authenticate a Rose-Hulman User with Firebase:
 
 ```swift
-import Firebase
-
 let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")
 myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulman.edu", password: "Pa$sW0rd") {
   (err, data) -> Void in
@@ -172,7 +178,11 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulma
 
 ```
 
-#### Javascript
+#### Objective-C Projects
+
+TODO
+
+### Javascript
 
 TODO
 

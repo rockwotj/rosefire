@@ -157,10 +157,8 @@ Then run `pod install`
 **Step 2:** Import Firebase and Rosefire in your bridging header:
 
 ```objc
-
 #import <Firebase/Firebase.h>
 #import <Rosefire/Rosefire.h>
-
 ```
 
 **Step 3:** Authenticate a Rose-Hulman User with Firebase:
@@ -180,7 +178,27 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulma
 
 #### Objective-C Projects
 
-TODO
+**Step 2:** Import Firebase and Rosefire in the fire you're using it
+```objc
+#import <Firebase/Firebase.h>
+#import <Rosefire/Rosefire.h>
+```
+
+**Step 3:** Authenticate a Rose-Hulman User with Firebase:
+
+```objc
+Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://passwordkeeper.firebaseio.com"];
+[myFirebaseRef authWithRoseHulman:@"<REGISTRY_TOKEN>"
+                            email:@"rockwotj@rose-hulman.edu"
+                         password:@"Pa$sW0rd"
+              withCompletionBlock:^(NSError * err, FAuthData * authData) {
+    if (!err) {
+        // Show logged in UI
+    } else {
+        // Show login error
+    }
+}];
+```
 
 ### Javascript
 

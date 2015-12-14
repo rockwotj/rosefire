@@ -204,6 +204,17 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://passwordkeeper
 
 TODO
 
+## Server Libraries
+
+Want to use Rose-Hulman Authentication on your server without learning about LDAP? Feel free to use these libraries to give you an endpoint for authentication.
+
+### Python (AppEngine)
+
+TODO
+
+### NodeJS
+
+TODO
 
 ## Production Setup
 

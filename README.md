@@ -105,10 +105,12 @@ There are client libraries available to more easily integrate this into your cod
 
 [![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
 
-**Step 1:** Add it in your build.gradle at the end of repositories:
+**Step 1:** Add jit in your build.gradle at the end of repositories:
 
 ```gradle
 android {
+  ... (other stuff)
+  
   repositories {
     maven { url "https://jitpack.io" }
   }

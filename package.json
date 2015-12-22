@@ -1,0 +1,25 @@
+{
+  "name": "rosefire",
+  "version": "1.0.0",
+  "description": "A firebase authentication library for Rose-Hulman",
+  "main": "rosefire.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rockwotj/rosefire.git"
+  },
+  "author": "Tyler Rockwood",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rockwotj/rosefire/issues"
+  },
+  "homepage": "https://github.com/rockwotj/rosefire#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.1",
+    "gulp-util": "^3.0.7"
+  }
+}

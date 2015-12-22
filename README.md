@@ -3,6 +3,7 @@
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
 [![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
 ![iOS](https://img.shields.io/badge/ios-v1.0.2-blue.svg)
+![Javascript](https://img.shields.io/badge/ios-v1.0.0-orange.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -168,7 +169,7 @@ Then run `pod install`
 ```swift
 let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")
 myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulman.edu", password: "Pa$sW0rd") {
-  (err, data) -> Void in
+  (err, authData) -> Void in
     if err == nil {
       // Show logged in UI
     } else {
@@ -189,7 +190,7 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulma
 **Step 3:** Authenticate a Rose-Hulman User with Firebase:
 
 ```objc
-Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://passwordkeeper.firebaseio.com"];
+Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.firebaseio.com"];
 [myFirebaseRef authWithRoseHulman:@"<REGISTRY_TOKEN>"
                             email:@"rockwotj@rose-hulman.edu"
                          password:@"Pa$sW0rd"
@@ -204,24 +205,78 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://passwordkeeper
 
 ### Javascript
 
+![Javascript](https://img.shields.io/badge/ios-v1.0.0-orange.svg)
+
+**Step 1:** You either need to include this script tag, OR download the file and host it on your server. Either way you need to reference this file. Make sure you include this AFTER Firebase.
+
+```html
+<!-- Include Firebase First! -->
+<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v1.0.0/dist/js/rosefire.min.js"></script>
+```
+
+**Step 2:** You're all ready to authenticate if you use [Firebase's plain javascript SDK](https://www.firebase.com/docs/web/api/).
+
+```javascript
+var myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
+myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu", "Pa$sW0rd", function(err, authData) {
+  if (error) {
+    // User not logged in!
+  } else {
+    // User logged in successfully 
+  }
+};
+```
+
+**Optional Step:** If you're using Angularfire or some other wrapper around firebase, you'll want to use the globally attached `Rosefire.getToken` function (example using [AngularFire](https://www.firebase.com/docs/web/libraries/angular/quickstart.html), although make sure you follow [best practices](https://www.firebase.com/docs/web/libraries/angular/guide/beyond-angularfire.html)).
+
+```javascript
+app.controller("MyAuthCtrl", ["$firebaseAuth",
+  function($firebaseAuth) {
+    var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
+    var data = {
+      registryToken: "<REGISTRY_TOKEN>", 
+      email: "rockwotj@rose-hulman.edu", 
+      password: "Pa$sW0rd"
+    };
+    Rosefire.getToken(data, function(err, token) {
+      if (err) {
+        // User not logged in!
+        return;
+      }
+      $firebaseAuth(ref).$authWithCustomToken(token)
+      .then(function(authData) {
+        // User logged in successfully 
+      }).catch(function(error) {
+        // User not logged in!
+      });
+    }
+  }
+]);
+
+```
+
+
+## Server Side Use and Libraries
+
+Want to use Rose-Hulman Authentication on your server without learning about LDAP? Feel free to use Rosefire as a [microservice](http://martinfowler.com/articles/microservices.html) for authentication and these libraries to make your life easier. 
+
+If you use these libraries, you can either do everything server-side, or you get fetch the tokens using the client libraries, then pass the returned token to your backend and decrypt it on your server. In this case, the SECRET that you use when you [register](https://rosefire.csse.rose-hulman.edu) is whatever you want, but you'll need to use it as a key on your server.
+
+NOTE: Currently only the Javascript client library allows you to get tokens without using Firebase via `Rosefire.getToken`.
+
+### Python
+
 TODO
 
-## Server Libraries
+Note that this will work with [Google App Engine's Python SDK](https://cloud.google.com/appengine/docs/python/).
 
-Want to use Rose-Hulman Authentication on your server without learning about LDAP? Feel free to use these libraries to give you an endpoint for authentication.
-
-### Python (AppEngine)
-
-TODO
-
-### NodeJS
+### Java
 
 TODO
 
 ## Production Setup
 
 This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. 
-
 ### The Guv'nor
 
 Make sure the Guv'nor is set up. See the [latest deployment instructions](https://github.com/tableflip/guvnor#install) for help. Everything should already be set up on the rosefire server.

@@ -230,15 +230,15 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu",
 **Optional Step:** If you're using Angularfire or some other wrapper around firebase, you'll want to use the globally attached `Rosefire.getToken` function (example using [AngularFire](https://www.firebase.com/docs/web/libraries/angular/quickstart.html), although make sure you follow [best practices](https://www.firebase.com/docs/web/libraries/angular/guide/beyond-angularfire.html)).
 
 ```javascript
-app.controller("MyAuthCtrl", ["$firebaseAuth",
-  function($firebaseAuth) {
+app.controller("MyAuthCtrl", ["$firebaseAuth", "$window",
+  function($firebaseAuth, $window) {
     var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
     var data = {
       registryToken: "<REGISTRY_TOKEN>", 
       email: "rockwotj@rose-hulman.edu", 
       password: "Pa$sW0rd"
     };
-    Rosefire.getToken(data, function(err, token) {
+    $window.Rosefire.getToken(data, function(err, token) {
       if (err) {
         // User not logged in!
         return;

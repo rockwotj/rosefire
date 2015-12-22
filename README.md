@@ -3,7 +3,7 @@
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
 [![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
 ![iOS](https://img.shields.io/badge/ios-v1.0.2-blue.svg)
-![Javascript](https://img.shields.io/badge/ios-v1.0.0-orange.svg)
+![Javascript](https://img.shields.io/badge/javascript-v1.0.0-orange.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -205,7 +205,7 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.fire
 
 ### Javascript
 
-![Javascript](https://img.shields.io/badge/ios-v1.0.0-orange.svg)
+![Javascript](https://img.shields.io/badge/javascript-v1.0.0-orange.svg)
 
 **Step 1:** You either need to include this script tag, OR download the file and host it on your server. Either way you need to reference this file. Make sure you include this AFTER Firebase.
 

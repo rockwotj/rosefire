@@ -2,6 +2,7 @@ var ActiveDirectory = require('activedirectory');
 var FirebaseTokenGenerator = require("firebase-token-generator");
 var Express = require('express');
 var BodyParser = require('body-parser');
+var corser = require("corser");
 var moment = require('moment');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
@@ -29,6 +30,7 @@ app.get('/', function(req, res) {
 
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({extended: false}));
+app.use(corser.create())
 
 app.use(function (req, res, next) {
   var email = req.body.email;
@@ -45,13 +47,6 @@ app.use(function (req, res, next) {
       next();
     });
   }
-});
-
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
 });
 
 app.use('/api/auth', function (req, res, next) {

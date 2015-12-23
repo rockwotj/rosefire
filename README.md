@@ -1,7 +1,7 @@
 # Rose-Hulman Firebase Authentication
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
+[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
 ![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
 ![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
 
@@ -104,7 +104,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
+[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
 
 **Step 1:** Add jit in your build.gradle at the end of repositories:
 
@@ -121,7 +121,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.6'
+  compile 'com.github.rockwotj:rosefire:android-v1.0.7'
 }
 ```
 

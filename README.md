@@ -2,7 +2,7 @@
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
 [![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
-![iOS](https://img.shields.io/badge/ios-v1.0.2-blue.svg)
+![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
 ![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
@@ -145,12 +145,12 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 ### iOS
 
-![iOS](https://img.shields.io/badge/ios-v1.0.2-blue.svg)
+![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
 
 **Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.2'
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.3'
 ```
 
 Then run `pod install`

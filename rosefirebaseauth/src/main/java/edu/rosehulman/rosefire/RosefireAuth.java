@@ -1,6 +1,5 @@
 package edu.rosehulman.rosefire;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,40 +8,21 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.firebase.client.Firebase;
 import com.firebase.client.Firebase.AuthResultHandler;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.FirebaseException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import edu.rosehulman.rockwotj.rosefirebaseauth.R;
 
 /**
  * <p>The class that authenticates a Rose-Hulman User with Firebase for you.</p>
- * <p>
+ * <p/>
  * <code>
  * RosefireAuth roseAuth = new RosefireAuth(fb, "REGISTRY_TOKEN");
  * roseAuth.authWithRoseHulman("rockwotj@rose-hulman.ed", "Pa$sW0rd", new Firebase.AuthResultHandler() {
@@ -54,8 +34,8 @@ import edu.rosehulman.rockwotj.rosefirebaseauth.R;
  * // Show Login Error
  * }
  * });
- * <p>
- * <p>
+ * <p/>
+ * <p/>
  * </code>
  */
 public class RosefireAuth {
@@ -266,7 +246,9 @@ public class RosefireAuth {
                 e.printStackTrace();
                 return null;
             }
-            Log.d(TAG, "Authentation for " + data.get("username"));
+            if (DEBUG) {
+                Log.d(TAG, "Authentation for " + data.get("username"));
+            }
             return data.get("token");
         }
 
@@ -316,147 +298,47 @@ public class RosefireAuth {
         }
         String data = json;
         String result;
+
         try {
-            try {
-                SSLContext sc = SSLContext.getInstance("SSL");
-                KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
-                X509Certificate x509ca;
-                final Certificate rootca;
-                try {
-                    Field firebaseContext = com.firebase.client.core.Context.class.getDeclaredField("androidContext");
-                    firebaseContext.setAccessible(true);
-                    Context context = (Context) firebaseContext.get(null);
+            urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
 
-                    InputStream is = context.getResources().openRawResource(R.raw.rosefire);
-                    store.load(is, "rosefire".toCharArray());
-                    is.close();
-                    rootca = store.getCertificate("rosefire.csse.rose-hulman.edu");
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept", "application/json");
+            urlConnection.setRequestMethod("POST");
+            urlConnection.connect();
 
-                    // Turn it to X509 format.
-                    is = new ByteArrayInputStream(rootca.getEncoded());
-                    x509ca = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(is);
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    Log.e("RFA", "YOU MUST SET THE FIREBASE CONTEXT!!");
-                    throw new RosefireException(0, "SET THE FIREBASE CONTEXT!");
-                }
+            //TODO: Use com.fasterxml.jackson for serialization instead of bufferedReader/Writer
+            OutputStream outputStream = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            writer.write(data);
+            writer.close();
+            outputStream.close();
 
-                if (null == x509ca) {
-                    throw new CertificateException("Embedded SSL certificate has expired.");
-                }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
 
-                // Check the CA's validity.
-                x509ca.checkValidity();
+            String line;
+            StringBuilder sb = new StringBuilder();
 
-                // Accepted CA is only the one installed in the store.
-                final X509Certificate[] acceptedIssuers = new X509Certificate[]{x509ca};
-
-                TrustManager[] trustManagers = new TrustManager[]{
-                        new X509TrustManager() {
-                            @Override
-                            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                            }
-
-                            @Override
-                            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                                Exception error = null;
-
-                                if (null == chain || 0 == chain.length) {
-                                    error = new CertificateException("Certificate chain is invalid.");
-                                } else if (null == authType || 0 == authType.length()) {
-                                    error = new CertificateException("Authentication type is invalid.");
-                                } else {
-                                    if (DEBUG)
-                                        Log.i(TAG, "Chain includes " + chain.length + " certificates.");
-                                    try {
-                                        for (X509Certificate cert : chain) {
-                                            if (DEBUG) {
-                                                Log.i(TAG, "Server Certificate Details:");
-                                                Log.i(TAG, "---------------------------");
-                                                Log.i(TAG, "IssuerDN: " + cert.getIssuerDN().toString());
-                                                Log.i(TAG, "SubjectDN: " + cert.getSubjectDN().toString());
-                                                Log.i(TAG, "Serial Number: " + cert.getSerialNumber());
-                                                Log.i(TAG, "Version: " + cert.getVersion());
-                                                Log.i(TAG, "Not before: " + cert.getNotBefore().toString());
-                                                Log.i(TAG, "Not after: " + cert.getNotAfter().toString());
-                                                Log.i(TAG, "---------------------------");
-                                            }
-                                            // Make sure that it hasn't expired.
-                                            cert.checkValidity();
-
-                                            // Verify the certificate's public key chain.
-                                            cert.verify(rootca.getPublicKey());
-                                        }
-                                    } catch (InvalidKeyException e) {
-                                        error = e;
-                                    } catch (NoSuchAlgorithmException e) {
-                                        error = e;
-                                    } catch (NoSuchProviderException e) {
-                                        error = e;
-                                    } catch (SignatureException e) {
-                                        error = e;
-                                    }
-                                }
-                                if (null != error) {
-                                    Log.e("GALE", "Certificate error", error);
-                                    throw new CertificateException(error);
-                                }
-                            }
-
-                            @Override
-                            public X509Certificate[] getAcceptedIssuers() {
-                                return acceptedIssuers;
-                            }
-                        }
-                };
-                sc.init(null, trustManagers, new java.security.SecureRandom());
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            } catch (GeneralSecurityException e) {
-            }
-            try {
-                urlConnection = (HttpsURLConnection) ((new URL(url).openConnection()));
-
-                urlConnection.setDoOutput(true);
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accept", "application/json");
-                urlConnection.setRequestMethod("POST");
-                urlConnection.connect();
-
-                //TODO: Use com.fasterxml.jackson for serialization instead of bufferedReader/Writer
-                OutputStream outputStream = urlConnection.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                writer.write(data);
-                writer.close();
-                outputStream.close();
-
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-                String line;
-                StringBuilder sb = new StringBuilder();
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-                result = sb.toString();
-            } catch (Exception e) {
-                int code = 0;
-                try {
-                    code = urlConnection.getResponseCode();
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                throw new RosefireException(code, code == 400 ? "Invalid Rose-Hulman Credentials!" : "Network error!");
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
             }
 
-        } catch (RosefireException e) {
-            throw e;
+            bufferedReader.close();
+            result = sb.toString();
+        } catch (Exception e) {
+            int code = 0;
+            try {
+                code = urlConnection.getResponseCode();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            if (DEBUG) {
+                Log.d(TAG, "Error code for " + url + " is: " + code);
+            }
+            throw new RosefireException(code, code == 400 ? "Invalid Rose-Hulman Credentials!" : "Network error!");
         }
+
         return result;
     }
 

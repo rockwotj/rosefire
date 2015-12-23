@@ -1,7 +1,19 @@
 (function(exports) {
-  var getRosefireToken = function(data, callback) {
+  var createCORSRequest = function(method, url) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://rosefire.csse.rose-hulman.edu/api/auth');
+    if ("withCredentials" in xhr) {
+      xhr.open(method, url, true);
+    } else if (typeof XDomainRequest != "undefined") {
+      xhr = new XDomainRequest();
+      xhr.open(method, url);
+    } else {
+      // Otherwise, CORS is not supported by the browser.
+      xhr = null;
+    }
+    return xhr;
+  };
+  var getRosefireToken = function(data, callback) {
+    xhr = createCORSRequest('POST', 'https://rosefire.csse.rose-hulman.edu/api/auth');
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function() {
       if (xhr.status === 200) {
@@ -12,6 +24,9 @@
       } else {
         callback(new Error("Error authenticating"));
       }
+    };
+    xhr.onerror = function() {
+      callback(new Error("Error making request to Rosefire"));
     };
     xhr.send(JSON.stringify(data));
   };

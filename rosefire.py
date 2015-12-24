@@ -3,6 +3,7 @@ import hmac
 import hashlib
 import sys
 from datetime import datetime
+import urllib2
 try:
     import json
 except ImportError:
@@ -42,6 +43,35 @@ def _decode_json(obj_str):
     obj_str += '=' * (4 - len(obj_str) % 4)
     return json.loads(_decode(bytearray(obj_str, 'utf-8')))
 
+class RosefireError(Exception):
+    pass
+
+def get_token(registry_token, email, password, options=None):
+    req = urllib2.Request('https://rosefire.csse.rose-hulman.edu/api/auth/')
+    req.add_header('Content-Type', 'application/json')
+
+    data = {
+        'registryToken': registry_token,
+        'email': email,
+        'password': password
+    }
+    if options is not None:
+        data['options'] = {}
+        for key in ['admin', 'expires', 'notBefore']:
+            if key in options:
+                data['options'][key] = options[key]
+    response = None
+    error = False
+    try:
+        response = urllib2.urlopen(req, json.dumps(data))
+    except urllib2.HTTPError as e:
+        error = True
+        response = e
+    payload = json.loads(response.read())
+    if error:
+        raise RosefireError(payload['error'] or 'Error getting token')
+    return payload['token']
+
 class AuthData():
 
     def __init__(self, username, domain, email, issued_at):
@@ -49,9 +79,6 @@ class AuthData():
         self.domain = domain
         self.email = email
         self.issued_at = issued_at
-
-class RosefireError(Exception):
-    pass
 
 class RosefireTokenVerifier():
 
@@ -80,7 +107,8 @@ class RosefireTokenVerifier():
 
 
 if __name__ == "__main__":
-   token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZWJ1ZyI6ZmFsc2UsImQiOnsidWlkIjoicm9ja3dvdGoiLCJkb21haW4iOiJyb3NlLWh1bG1hbi5lZHUiLCJlbWFpbCI6InJvY2t3b3RqQHJvc2UtaHVsbWFuLmVkdSIsInRpbWVzdGFtcCI6IjIwMTUtMTItMjNUMTU6MjU6MTQtMDU6MDAifSwidiI6MCwiYWRtaW4iOnRydWUsImlhdCI6MTQ1MDkwMjMxNH0.P50l5YvcRNO4IQ5WT9sKfaBFBiJHU5yxLnCxfJ5xprI"
+   registry_token = "59c300ed7fa9d438198293e9cb675290fcf40988c93103b10b997dc0329c6aa58d7d0f1c244ffd41a0a24e8e04d089238oVFqR4JfVWV/+sohxs6u2He6uOd6ZpFovwiRNam8OUb6kyk6BLktxRGT4/sq6jtYHS7Q/cDH4MmUml8n89i9HL/AIQhzU3HjuIKJS96JBA="
+   token = get_token(registry_token, "rockwotj@rose-hulman.edu", "Pa$sw0rd")
    secret = "secret"
    user_info = RosefireTokenVerifier(secret).verify(token)
    print user_info.email

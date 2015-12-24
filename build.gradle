@@ -1,5 +1,4 @@
 group 'edu.rosehulman.csse'
-id 'rosefire-server'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'

@@ -6,6 +6,7 @@ var corser = require("corser");
 var moment = require('moment');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
+var encrypter = require('simple-encryptor');
 
 var ldapConfig = {
   url: 'ldap://rose-hulman.edu:389',
@@ -16,6 +17,8 @@ var rose = new ActiveDirectory(ldapConfig);
 var secretsFile = process.env.SECRETS_FILE || 'secrets.json';
 
 var secrets = JSON.parse(fs.readFileSync(secretsFile));
+
+var engine = encrypter(secrets.key);
 
 var extractEmailUsername = function(email) {
   var emailSplit = email.split("@");
@@ -54,16 +57,15 @@ app.use('/api/auth', function (req, res, next) {
   if (!token) {
     res.status(400).json({error: 'Missing registryToken in request', status: 400});
   } else {
-    jwt.verify(token, secrets.key, secrets, function (err, decoded) {
-      if (err) {
-        res.status(400).json({error: 'Invalid registryToken in request', status: 400});
-        return;
-      }
-      console.log("Registry token successfully decoded for " + decoded.admin + "'s app");
-      req.body.secret = decoded.secret;
-      req.body.admin = decoded.admin;
-      next();
-    });
+    var decoded = engine.decrypt(token);
+    if (decoded == null) {
+      res.status(400).json({error: 'Invalid registryToken in request', status: 400});
+      return;
+    }
+    console.log("Registry token successfully decoded for " + decoded.admin + "'s app");
+    req.body.secret = decoded.secret;
+    req.body.admin = decoded.admin;
+    next();
   }
 });
 
@@ -112,8 +114,7 @@ app.post('/api/register', function (req, res, next) {
     secret: secret,
     timestamp: moment().format()
   };
-
-  var token = jwt.sign(tokenData, secrets.key, secrets);
+  var token = engine.encrypt(tokenData);
   console.log("Generated registryToken for " + username);
   res.json({registryToken: token, timestamp: tokenData.timestamp, username: username}); 
 });

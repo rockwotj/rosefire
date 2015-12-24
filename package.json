@@ -10,7 +10,8 @@
     "express": "^4.13.3",
     "firebase-token-generator": "^2.0.0",
     "jsonwebtoken": "^5.0.5",
-    "moment": "^2.10.6"
+    "moment": "^2.10.6",
+    "simple-encryptor": "^1.0.3"
   },
   "devDependencies": {},
   "scripts": {

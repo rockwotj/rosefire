@@ -271,8 +271,44 @@ TODO
 Note that this will work with [Google App Engine's Python SDK](https://cloud.google.com/appengine/docs/python/).
 
 ### Java
+```maven
+<repositories>
+	<repository>
+    <id>jitpack.io</id>
+	  <url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
 
-TODO
+```gradle
+
+```
+
+```maven
+<dependency>
+  <groupId>com.github.rockwotj</groupId>
+	<artifactId>rosefire-server</artifactId>
+	<version>java-server-v1.0.0</version>
+</dependency>
+```
+
+```gradle
+dependencies {
+  compile 'com.github.rockwotj:rosefire-server:java-server-v1.0.0'
+}
+```
+
+IMPORTANT: Only do this on a trusted server
+
+
+```java
+RosefireTokenVerifier verifier = new RosefireTokenVerifier("<SECRET>");
+
+AuthData decodedToken = verifier.verify("<TOKEN_FROM_ROSEFIRE>");
+
+decodedToken.getUsername(); // "rockwotj"
+decodedToken.getIssuedAt(); // Date of when logged in (Use this to determine session length)
+```
 
 ## Production Setup
 

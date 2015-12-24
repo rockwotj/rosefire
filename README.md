@@ -262,7 +262,7 @@ Want to use Rose-Hulman Authentication on your server without learning about LDA
 
 If you use these libraries, you can either do everything server-side, or you get fetch the tokens using the client libraries, then pass the returned token to your backend and decrypt it on your server. In this case, the SECRET that you use when you [register](https://rosefire.csse.rose-hulman.edu) is whatever you want, but you'll need to use it as a key on your server.
 
-NOTE: Currently only the Javascript client library allows you to get tokens without using Firebase via `Rosefire.getToken`.
+NOTE: Currently only the Java (not android) and Javascript libraries allows you to get tokens without using Firebase via `Rosefire.getToken` and `RosefireAuth.getToken`.
 
 ### Python
 
@@ -271,43 +271,56 @@ TODO
 Note that this will work with [Google App Engine's Python SDK](https://cloud.google.com/appengine/docs/python/).
 
 ### Java
+
+**Step 1**: Add jitpack as a maven repo to your build manager.
+
 ```maven
 <repositories>
 	<repository>
-    <id>jitpack.io</id>
-	  <url>https://jitpack.io</url>
+    		<id>jitpack.io</id>
+    		<url>https://jitpack.io</url>
 	</repository>
 </repositories>
 ```
 
 ```gradle
-
+repositories {
+    maven { url "https://jitpack.io" }
+}
 ```
+
+**Step 2**: Add the rosefire java library as a dependancy of this library.
 
 ```maven
 <dependency>
   <groupId>com.github.rockwotj</groupId>
-	<artifactId>rosefire-server</artifactId>
-	<version>java-server-v1.0.0</version>
+	<artifactId>rosefire</artifactId>
+	<version>java-v1.0.0</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire-server:java-server-v1.0.0'
+  compile 'com.github.rockwotj:rosefire:java-v1.0.0'
 }
 ```
 
-IMPORTANT: Only do this on a trusted server
+**Step 3**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire.
 
+**IMPORTANT**: Only do this on a trusted server, as if someone has access to your secret, then they can generate login tokens themselves, which is really scary.
 
 ```java
+String rosefireToken;
+// Either recieve the rosefireToken from a client app OR use the below code on your server if you have a login form.
+rosefireToken = new RosefireAuth("<REGISTRY_TOKEN>").getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
+
+// Now verify the token you got
 RosefireTokenVerifier verifier = new RosefireTokenVerifier("<SECRET>");
 
-AuthData decodedToken = verifier.verify("<TOKEN_FROM_ROSEFIRE>");
+AuthData decodedToken = verifier.verify(rosefireToken);
 
 decodedToken.getUsername(); // "rockwotj"
-decodedToken.getIssuedAt(); // Date of when logged in (Use this to determine session length)
+decodedToken.getIssuedAt(); // Timestamp of when logged in (Use this to determine session length)
 ```
 
 ## Production Setup

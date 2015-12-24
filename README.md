@@ -1,9 +1,9 @@
 # Rose-Hulman Firebase Authentication
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
-![iOS](https://img.shields.io/badge/ios-v1.0.2-blue.svg)
-![Javascript](https://img.shields.io/badge/javascript-v1.0.0-orange.svg)
+[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
+![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
+![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -104,7 +104,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.6-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.6)
+[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
 
 **Step 1:** Add jit in your build.gradle at the end of repositories:
 
@@ -121,7 +121,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.6'
+  compile 'com.github.rockwotj:rosefire:android-v1.0.7'
 }
 ```
 
@@ -145,12 +145,12 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 ### iOS
 
-![iOS](https://img.shields.io/badge/ios-v1.0.2-blue.svg)
+![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
 
 **Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.2'
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.3'
 ```
 
 Then run `pod install`
@@ -205,13 +205,13 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.fire
 
 ### Javascript
 
-![Javascript](https://img.shields.io/badge/javascript-v1.0.0-orange.svg)
+![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
 
 **Step 1:** You either need to include this script tag, OR download the file and host it on your server. Either way you need to reference this file. Make sure you include this AFTER Firebase.
 
 ```html
 <!-- Include Firebase First! -->
-<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v1.0.0/dist/js/rosefire.min.js"></script>
+<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v1.0.1/dist/js/rosefire.min.js"></script>
 ```
 
 **Step 2:** You're all ready to authenticate if you use [Firebase's plain javascript SDK](https://www.firebase.com/docs/web/api/).
@@ -271,8 +271,44 @@ TODO
 Note that this will work with [Google App Engine's Python SDK](https://cloud.google.com/appengine/docs/python/).
 
 ### Java
+```maven
+<repositories>
+	<repository>
+    <id>jitpack.io</id>
+	  <url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
 
-TODO
+```gradle
+
+```
+
+```maven
+<dependency>
+  <groupId>com.github.rockwotj</groupId>
+	<artifactId>rosefire-server</artifactId>
+	<version>java-server-v1.0.0</version>
+</dependency>
+```
+
+```gradle
+dependencies {
+  compile 'com.github.rockwotj:rosefire-server:java-server-v1.0.0'
+}
+```
+
+IMPORTANT: Only do this on a trusted server
+
+
+```java
+RosefireTokenVerifier verifier = new RosefireTokenVerifier("<SECRET>");
+
+AuthData decodedToken = verifier.verify("<TOKEN_FROM_ROSEFIRE>");
+
+decodedToken.getUsername(); // "rockwotj"
+decodedToken.getIssuedAt(); // Date of when logged in (Use this to determine session length)
+```
 
 ## Production Setup
 

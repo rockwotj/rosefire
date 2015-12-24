@@ -17,7 +17,9 @@ public class RosefireTokenVerifier {
         JSONObject payload = decoder.decode(token);
         try {
             return new AuthData(payload);
-        } catch (JSONException | ParseException e) {
+        } catch (JSONException e) {
+            throw new RosefireError("Invalid Rosefire token", e);
+        } catch (ParseException e) {
             throw new RosefireError("Invalid Rosefire token", e);
         }
     }

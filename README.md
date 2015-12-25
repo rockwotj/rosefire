@@ -262,13 +262,52 @@ Want to use Rose-Hulman Authentication on your server without learning about LDA
 
 If you use these libraries, you can either do everything server-side, or you get fetch the tokens using the client libraries, then pass the returned token to your backend and decrypt it on your server. In this case, the SECRET that you use when you [register](https://rosefire.csse.rose-hulman.edu) is whatever you want, but you'll need to use it as a key on your server.
 
-NOTE: Currently only the Java (not android) and Javascript libraries allows you to get tokens without using Firebase via `Rosefire.getToken` and `RosefireAuth.getToken`.
+NOTE: You can currently get tokens on all platforms except ios. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase.
+
+### A Note About Security
+
+**IMPORTANT:** Because token generation requires your Secret, you should only generate
+tokens on *trusted servers*. Never embed your Secret directly into your application and
+never share your Secret with a connected client.
+
 
 ### Python
 
-TODO
+**Step 1**: The library is installable as a pip package. Install it using the below command.
 
-Note that this will work with [Google App Engine's Python SDK](https://cloud.google.com/appengine/docs/python/).
+```shell
+pip install https://github.com/rockwotj/rosefire/archive/python-v1.0.0.zip
+```
+
+**Step 2**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire. The below example is using [webapp2](https://webapp-improved.appspot.com/), please note that you'll want to do more error checking, as both the get_token and verify functions can throw Exceptions.
+
+
+
+```python
+class MainHandler(webapp2.RequestHandler):
+    def get(self):
+        rosefire_token = self.request.cookies.get('rosefire_token')
+        if rosefire_token:
+            print rosefire_token
+            auth_data = RosefireTokenVerifier(SECRET).verify(rosefire_token)
+            self.response.write("You're logged in as: " + auth_data.email)
+        else:
+            self.response.write(login_form)
+
+    def post(self):
+        email = self.request.get("email")
+        password = self.request.get("password")
+        token = rosefire.get_token(REGISTRY_TOKEN, email, password)
+        self.response.set_cookie('rosefire_token', token, max_age=360, path='/')
+        self.redirect("/")
+```
+
+
+To get this working on GAE you need to follow [these instructions](https://cloud.google.com/appengine/docs/python/tools/libraries27?hl=en#vendoring) to get third party libraries to work. 
+```shell
+pip install -t libs https://github.com/rockwotj/rosefire/archive/python-v1.0.0.zip
+```
+
 
 ### Java
 
@@ -306,8 +345,6 @@ dependencies {
 ```
 
 **Step 3**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire.
-
-**IMPORTANT**: Only do this on a trusted server, as if someone has access to your secret, then they can generate login tokens themselves, which is really scary.
 
 ```java
 String rosefireToken;

@@ -94,7 +94,7 @@ class RosefireTokenVerifier():
             if decoded_header['alg'] != 'HS256':
                 raise RosefireError('Wrong algorithm!')
             secure_bits = '.'.join(encoded[:-1])
-            sig = _sign(secret, secure_bits)
+            sig = _sign(self.secret, secure_bits)
             if encoded[2] != sig:
                 raise RosefireError('Token generated with invalid secret!')
             decoded_claims = _decode_json(encoded[1])['d']

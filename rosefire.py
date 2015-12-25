@@ -97,10 +97,10 @@ class RosefireTokenVerifier():
             sig = _sign(self.secret, secure_bits)
             if encoded[2] != sig:
                 raise RosefireError('Token generated with invalid secret!')
-            decoded_claims = _decode_json(encoded[1])['d']
-            timestamp = decoded_claims['timestamp']
-            issued_at = datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S-05:00')
-            return AuthData(decoded_claims['uid'], decoded_claims['domain'], decoded_claims['email'], issued_at)
+            decoded_claims = _decode_json(encoded[1])
+            issued_at = datetime.fromtimestamp(decoded_claims['iat'])
+            payload = decoded_claims['d']
+            return AuthData(payload['uid'], payload['domain'], payload['email'], issued_at)
         except:
             raise RosefireError('Error decoding token')
 
@@ -108,7 +108,7 @@ class RosefireTokenVerifier():
 
 if __name__ == "__main__":
    registry_token = "59c300ed7fa9d438198293e9cb675290fcf40988c93103b10b997dc0329c6aa58d7d0f1c244ffd41a0a24e8e04d089238oVFqR4JfVWV/+sohxs6u2He6uOd6ZpFovwiRNam8OUb6kyk6BLktxRGT4/sq6jtYHS7Q/cDH4MmUml8n89i9HL/AIQhzU3HjuIKJS96JBA="
-   token = get_token(registry_token, "rockwotj@rose-hulman.edu", "Pa$sw0rd")
+   token = get_token(registry_token, "rockwotj@rose-hulman.edu", "Pa$sW0rd")
    secret = "secret"
    user_info = RosefireTokenVerifier(secret).verify(token)
    print user_info.email

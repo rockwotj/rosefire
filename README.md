@@ -311,7 +311,7 @@ pip install -t libs https://github.com/rockwotj/rosefire/archive/python-v1.0.0.z
 
 ### Java
 
-**Step 1**: Add jitpack as a maven repo to your build manager.
+**Step 1**: Add jitpack as a maven repo to either your pom.xml or your build.gradle
 
 ```maven
 <repositories>
@@ -332,7 +332,7 @@ repositories {
 
 ```maven
 <dependency>
-  <groupId>com.github.rockwotj</groupId>
+	<groupId>com.github.rockwotj</groupId>
 	<artifactId>rosefire</artifactId>
 	<version>java-v1.0.0</version>
 </dependency>
@@ -352,7 +352,7 @@ public class MainServlet extends HttpServlet {
    @Override
    public void doGet(HttpServletRequest request, HttpServletResponse response)
                throws IOException, ServletException {
-        String token = request.getParameter("rosefire_token");
+	String token = request.getParameter("rosefire_token");
 	// OR use the below code on your server if you have a login form and you're sending the email and 
 	// password in a POST request.
 	// token = new RosefireAuth(REGISTRY_TOKEN).getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
@@ -362,7 +362,7 @@ public class MainServlet extends HttpServlet {
 
 	AuthData decodedToken = null;
 	try {
-		decodedToken = verifier.verify(rosefireToken);
+		decodedToken = verifier.verify(token);
 	} catch (RosefireError e) {
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
 		return;
@@ -389,7 +389,7 @@ public class MainServlet extends HttpServlet {
 
 ## Production Setup
 
-This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. 
+This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.
 ### The Guv'nor
 
 Make sure the Guv'nor is set up. See the [latest deployment instructions](https://github.com/tableflip/guvnor#install) for help. Everything should already be set up on the rosefire server.
@@ -398,34 +398,8 @@ Make sure the Guv'nor is set up. See the [latest deployment instructions](https:
 
 To deploy the app, The Gov'nor can do it for you. See [this](https://github.com/tableflip/guvnor/blob/master/docs/apps.md#start-stop-restart-etc) for details. Don't forget to set the SECRETS_FILE environment variable!
 
-Make sure nginx is set up over HTTPS to proxy to localhost:8080. The nginx configuration is included below.
+Make sure nginx is set up over HTTPS to proxy to localhost:8080.
 
 ### Secrets File
 
-In order to run this server, a `secrets.json` file is required. At minimum, it must have a 'key' field that will be used as a symmetric key for the JWT that is the registry token. It may also include the following fields: 'subject', 'issuer', and 'audience'.
-
-### Nginx Configuration 
-
-```
-server {
-       listen         80 default_server;
-       listen         [::]:80 default_server;
-       server_name    rosefire.csse.rose-hulman.edu;
-       return         301 https://$server_name$request_uri;
-}
-
-server {
-       listen              443 ssl default_server;
-       listen              [::]:443 ssl default_server;
-       server_name         rosefire.csse.rose-hulman.edu;
-       ssl_certificate     /etc/nginx/ssl/nginx.crt;
-       ssl_certificate_key /etc/nginx/ssl/nginx.key;
-
-       location / {
-            proxy_pass       http://localhost:8080;
-            proxy_set_header Host      $host;
-            proxy_set_header X-Real-IP $remote_addr;
-       }
-}
-
-```
+In order to run this server, a `secrets.json` file is required. It must have a 'key' field that is the cipher key to the registry tokens that are generated.

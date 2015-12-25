@@ -1,13 +1,11 @@
 # Rose-Hulman Firebase Authentication
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
-![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
-![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
+[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](#android)
+[![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
+[![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
-
-This README and documentation is a work in progress
 
 ## TL;DR
 
@@ -23,7 +21,6 @@ Tokens recieved from this service will have the following fields, which can acce
 uid: (String) the Rose username of the user
 email: (String) the email of the user
 domain: (String) "rose-hulman.edu"
-timestamp: (String) an ISO formatted timestamp of when it was created.
 ```
 
 ### Endpoints
@@ -106,7 +103,7 @@ There are client libraries available to more easily integrate this into your cod
 
 [![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
 
-**Step 1:** Add jit in your build.gradle at the end of repositories:
+**Step 1:** Add jitpack in your build.gradle at the end of repositories:
 
 ```gradle
 android {
@@ -276,7 +273,7 @@ never share your Secret with a connected client. Only your registry token is saf
 **Step 1**: The library is installable as a pip package. Install it using the below command.
 
 ```shell
-pip install https://github.com/rockwotj/rosefire/archive/python-v1.0.0.zip
+pip install https://github.com/rockwotj/rosefire/archive/python-v1.0.1.zip
 ```
 
 **Step 2**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire. The below example is using [webapp2](https://webapp-improved.appspot.com/), please note that you'll want to do more error checking, as both the get_token and verify functions can throw Exceptions.
@@ -303,11 +300,7 @@ class MainHandler(webapp2.RequestHandler):
 ```
 
 
-To get this working on GAE you need to follow [these instructions](https://cloud.google.com/appengine/docs/python/tools/libraries27?hl=en#vendoring) to get third party libraries to work. 
-```shell
-pip install -t libs https://github.com/rockwotj/rosefire/archive/python-v1.0.0.zip
-```
-
+To get this working on GAE you need to follow [these instructions](https://cloud.google.com/appengine/docs/python/tools/libraries27?hl=en#vendoring) to get third party libraries to work.
 
 ### Java
 
@@ -334,13 +327,13 @@ repositories {
 <dependency>
 	<groupId>com.github.rockwotj</groupId>
 	<artifactId>rosefire</artifactId>
-	<version>java-v1.0.0</version>
+	<version>java-v1.0.1</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:java-v1.0.0'
+  compile 'com.github.rockwotj:rosefire:java-v1.0.1'
 }
 ```
 
@@ -349,40 +342,40 @@ dependencies {
 ```java
 
 public class MainServlet extends HttpServlet {
-   @Override
-   public void doGet(HttpServletRequest request, HttpServletResponse response)
+   	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
                throws IOException, ServletException {
-	String token = request.getParameter("rosefire_token");
-	// OR use the below code on your server if you have a login form and you're sending the email and 
-	// password in a POST request.
-	// token = new RosefireAuth(REGISTRY_TOKEN).getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
+		String token = request.getParameter("rosefire_token");
+		// OR use the below code on your server if you have a login form and you're sending the email and 
+		// password in a POST request.
+		// token = new RosefireAuth(REGISTRY_TOKEN).getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
 
-	// Now verify the token you got
-	RosefireTokenVerifier verifier = new RosefireTokenVerifier(SECRET);
+		// Now verify the token you got
+		RosefireTokenVerifier verifier = new RosefireTokenVerifier(SECRET);
 
-	AuthData decodedToken = null;
-	try {
-		decodedToken = verifier.verify(token);
-	} catch (RosefireError e) {
-		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
-		return;
-	}
+		AuthData decodedToken = null;
+		try {
+			decodedToken = verifier.verify(token);
+		} catch (RosefireError e) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+			return;
+		}
 	
-	decodedToken.getUsername(); // "rockwotj"
-	decodedToken.getIssuedAt(); // Timestamp of when logged in (Use this to determine session length)
+		decodedToken.getUsername(); // "rockwotj"
+		decodedToken.getIssuedAt(); // Timestamp of when logged in (Use this to determine session length)
 	
-	if (oneDayOld(decodedToken.getIssuedAt())) {
-		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Old Token");
-		return;
-	}
+		if (oneDayOld(decodedToken.getIssuedAt())) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Old Token");
+			return;
+		}
 	
-	PrintWriter out = response.getWriter();
-      	try {
-        	out.println("You're logged in as: " + decodedToken.getUsername());
-      	} finally {
-        	out.close();  // Always close the output writer
-      	}
-   }
+		PrintWriter out = response.getWriter();
+      		try {
+        		out.println("You're logged in as: " + decodedToken.getUsername());
+      		} finally {
+        		out.close();  // Always close the output writer
+      		}
+   	}
 }
 
 ```

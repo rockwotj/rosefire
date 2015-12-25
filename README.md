@@ -266,9 +266,9 @@ NOTE: You can currently get tokens on all platforms except ios. You'll need to u
 
 ### A Note About Security
 
-**IMPORTANT:** Because token generation requires your Secret, you should only generate
+**IMPORTANT:** Because token verifier requires your secret, you should only verifiy
 tokens on *trusted servers*. Never embed your Secret directly into your application and
-never share your Secret with a connected client.
+never share your Secret with a connected client. Only your registry token is safe to share with clients.
 
 
 ### Python
@@ -344,20 +344,47 @@ dependencies {
 }
 ```
 
-**Step 3**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire.
+**Step 3**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire. The below example is using a servlet.
 
 ```java
-String rosefireToken;
-// Either recieve the rosefireToken from a client app OR use the below code on your server if you have a login form.
-rosefireToken = new RosefireAuth("<REGISTRY_TOKEN>").getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
 
-// Now verify the token you got
-RosefireTokenVerifier verifier = new RosefireTokenVerifier("<SECRET>");
+public class MainServlet extends HttpServlet {
+   @Override
+   public void doGet(HttpServletRequest request, HttpServletResponse response)
+               throws IOException, ServletException {
+        String token = request.getParameter("rosefire_token");
+	// OR use the below code on your server if you have a login form and you're sending the email and 
+	// password in a POST request.
+	// token = new RosefireAuth(REGISTRY_TOKEN).getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
 
-AuthData decodedToken = verifier.verify(rosefireToken);
+	// Now verify the token you got
+	RosefireTokenVerifier verifier = new RosefireTokenVerifier(SECRET);
 
-decodedToken.getUsername(); // "rockwotj"
-decodedToken.getIssuedAt(); // Timestamp of when logged in (Use this to determine session length)
+	AuthData decodedToken = null
+	try {
+		decodedToken = verifier.verify(rosefireToken);
+	} catch (RosefireError e) {
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+		return;
+	}
+	
+	decodedToken.getUsername(); // "rockwotj"
+	decodedToken.getIssuedAt(); // Timestamp of when logged in (Use this to determine session length)
+	
+	if (oneDayOld(decodedToken.getIssuedAt())) {
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Old Token");
+		return;
+	}
+	
+	PrintWriter out = response.getWriter();
+      	try {
+        	out.println("You're logged in as: " + decodedToken.getUsername());
+      	} finally {
+        	out.close();  // Always close the output writer
+      	}
+   }
+}
+
 ```
 
 ## Production Setup

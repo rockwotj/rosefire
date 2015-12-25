@@ -360,7 +360,7 @@ public class MainServlet extends HttpServlet {
 	// Now verify the token you got
 	RosefireTokenVerifier verifier = new RosefireTokenVerifier(SECRET);
 
-	AuthData decodedToken = null
+	AuthData decodedToken = null;
 	try {
 		decodedToken = verifier.verify(rosefireToken);
 	} catch (RosefireError e) {

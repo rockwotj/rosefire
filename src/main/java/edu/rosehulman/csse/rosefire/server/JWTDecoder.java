@@ -44,7 +44,7 @@ public class JWTDecoder {
                 throw new RosefireError("Token generated with invalid secret!");
             }
 
-            return decodeJson(encodedClaims).getJSONObject("d");
+            return decodeJson(encodedClaims);
         } catch (Exception e) {
             throw new RosefireError("Error decoding token", e);
         }

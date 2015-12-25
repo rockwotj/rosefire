@@ -3,7 +3,7 @@ package edu.rosehulman.csse.rosefire.server;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
+import java.util.Date;
 
 public class RosefireTokenVerifier {
 
@@ -16,10 +16,10 @@ public class RosefireTokenVerifier {
     public AuthData verify(String token) throws RosefireError {
         JSONObject payload = decoder.decode(token);
         try {
-            return new AuthData(payload);
+            JSONObject authData = payload.getJSONObject("d");
+            Long timestamp = payload.getLong("iat") * 1000;
+            return new AuthData(authData.getString("uid"), authData.getString("domain"), authData.getString("email"), new Date(timestamp));
         } catch (JSONException e) {
-            throw new RosefireError("Invalid Rosefire token", e);
-        } catch (ParseException e) {
             throw new RosefireError("Invalid Rosefire token", e);
         }
     }

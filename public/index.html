@@ -121,12 +121,20 @@
           $('.copier').click(function(event) {
             var copyTextarea = $('.copyable');
             copyTextarea.select();
+            $('.copier').removeClass("btn-default");
             try {
               var successful = document.execCommand('copy');
               var msg = successful ? 'successful' : 'unsuccessful';
               console.log('Copying text command was ' + msg);
+              if (successful) {
+                $('.copier').html("Copied!");
+                $('.copier').addClass("btn-success");
+              }
             } catch (err) {
               console.log('Oops, unable to copy');
+              $('.copier').html("Failed!");
+              $('.copier').addClass("btn-danger");
+              $('.copier').prop("disabled",true);
             }
           });
         })

@@ -1,4 +1,4 @@
-# Rose-Hulman Firebase Authentication
+# Rose-Hulman Authentication API
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
 [![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](#android)

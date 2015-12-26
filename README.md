@@ -1,13 +1,11 @@
 # Rose-Hulman Firebase Authentication
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
-![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
-![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
+[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](#android)
+[![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
+[![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
-
-This README and documentation is a work in progress
 
 ## TL;DR
 
@@ -23,7 +21,6 @@ Tokens recieved from this service will have the following fields, which can acce
 uid: (String) the Rose username of the user
 email: (String) the email of the user
 domain: (String) "rose-hulman.edu"
-timestamp: (String) an ISO formatted timestamp of when it was created.
 ```
 
 ### Endpoints
@@ -106,7 +103,7 @@ There are client libraries available to more easily integrate this into your cod
 
 [![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
 
-**Step 1:** Add jit in your build.gradle at the end of repositories:
+**Step 1:** Add jitpack in your build.gradle at the end of repositories:
 
 ```gradle
 android {
@@ -262,57 +259,130 @@ Want to use Rose-Hulman Authentication on your server without learning about LDA
 
 If you use these libraries, you can either do everything server-side, or you get fetch the tokens using the client libraries, then pass the returned token to your backend and decrypt it on your server. In this case, the SECRET that you use when you [register](https://rosefire.csse.rose-hulman.edu) is whatever you want, but you'll need to use it as a key on your server.
 
-NOTE: Currently only the Javascript client library allows you to get tokens without using Firebase via `Rosefire.getToken`.
+NOTE: You can currently get tokens on all platforms except ios. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase.
+
+### A Note About Security
+
+**IMPORTANT:** Because token verifier requires your secret, you should only verifiy
+tokens on *trusted servers*. Never embed your Secret directly into your application and
+never share your Secret with a connected client. Only your registry token is safe to share with clients.
+
 
 ### Python
 
-TODO
+**Step 1**: The library is installable as a pip package. Install it using the below command.
 
-Note that this will work with [Google App Engine's Python SDK](https://cloud.google.com/appengine/docs/python/).
+```shell
+pip install https://github.com/rockwotj/rosefire/archive/python-v1.0.1.zip
+```
+
+**Step 2**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire. The below example is using [webapp2](https://webapp-improved.appspot.com/), please note that you'll want to do more error checking, as both the get_token and verify functions can throw Exceptions.
+
+
+
+```python
+class MainHandler(webapp2.RequestHandler):
+    def get(self):
+        rosefire_token = self.request.cookies.get('rosefire_token')
+        if rosefire_token:
+            print rosefire_token
+            auth_data = RosefireTokenVerifier(SECRET).verify(rosefire_token)
+            self.response.write("You're logged in as: " + auth_data.email)
+        else:
+            self.response.write(login_form)
+
+    def post(self):
+        email = self.request.get("email")
+        password = self.request.get("password")
+        token = rosefire.get_token(REGISTRY_TOKEN, email, password)
+        self.response.set_cookie('rosefire_token', token, max_age=360, path='/')
+        self.redirect("/")
+```
+
+
+To get this working on GAE you need to follow [these instructions](https://cloud.google.com/appengine/docs/python/tools/libraries27?hl=en#vendoring) to get third party libraries to work.
 
 ### Java
+
+**Step 1**: Add jitpack as a maven repo to either your pom.xml or your build.gradle
+
 ```maven
 <repositories>
 	<repository>
-    <id>jitpack.io</id>
-	  <url>https://jitpack.io</url>
+    		<id>jitpack.io</id>
+    		<url>https://jitpack.io</url>
 	</repository>
 </repositories>
 ```
 
 ```gradle
-
+repositories {
+    maven { url "https://jitpack.io" }
+}
 ```
+
+**Step 2**: Add the rosefire java library as a dependancy of this library.
 
 ```maven
 <dependency>
-  <groupId>com.github.rockwotj</groupId>
-	<artifactId>rosefire-server</artifactId>
-	<version>java-server-v1.0.0</version>
+	<groupId>com.github.rockwotj</groupId>
+	<artifactId>rosefire</artifactId>
+	<version>java-v1.0.1</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire-server:java-server-v1.0.0'
+  compile 'com.github.rockwotj:rosefire:java-v1.0.1'
 }
 ```
 
-IMPORTANT: Only do this on a trusted server
-
+**Step 3**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire. The below example is using a servlet.
 
 ```java
-RosefireTokenVerifier verifier = new RosefireTokenVerifier("<SECRET>");
 
-AuthData decodedToken = verifier.verify("<TOKEN_FROM_ROSEFIRE>");
+public class MainServlet extends HttpServlet {
+   	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+               throws IOException, ServletException {
+		String token = request.getParameter("rosefire_token");
+		// OR use the below code on your server if you have a login form and you're sending the email and 
+		// password in a POST request.
+		// token = new RosefireAuth(REGISTRY_TOKEN).getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
 
-decodedToken.getUsername(); // "rockwotj"
-decodedToken.getIssuedAt(); // Date of when logged in (Use this to determine session length)
+		// Now verify the token you got
+		RosefireTokenVerifier verifier = new RosefireTokenVerifier(SECRET);
+
+		AuthData decodedToken = null;
+		try {
+			decodedToken = verifier.verify(token);
+		} catch (RosefireError e) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+			return;
+		}
+	
+		decodedToken.getUsername(); // "rockwotj"
+		decodedToken.getIssuedAt(); // Timestamp of when logged in (Use this to determine session length)
+	
+		if (oneDayOld(decodedToken.getIssuedAt())) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Old Token");
+			return;
+		}
+	
+		PrintWriter out = response.getWriter();
+      		try {
+        		out.println("You're logged in as: " + decodedToken.getUsername());
+      		} finally {
+        		out.close();  // Always close the output writer
+      		}
+   	}
+}
+
 ```
 
 ## Production Setup
 
-This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. 
+This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.
 ### The Guv'nor
 
 Make sure the Guv'nor is set up. See the [latest deployment instructions](https://github.com/tableflip/guvnor#install) for help. Everything should already be set up on the rosefire server.
@@ -321,34 +391,8 @@ Make sure the Guv'nor is set up. See the [latest deployment instructions](https:
 
 To deploy the app, The Gov'nor can do it for you. See [this](https://github.com/tableflip/guvnor/blob/master/docs/apps.md#start-stop-restart-etc) for details. Don't forget to set the SECRETS_FILE environment variable!
 
-Make sure nginx is set up over HTTPS to proxy to localhost:8080. The nginx configuration is included below.
+Make sure nginx is set up over HTTPS to proxy to localhost:8080.
 
 ### Secrets File
 
-In order to run this server, a `secrets.json` file is required. At minimum, it must have a 'key' field that will be used as a symmetric key for the JWT that is the registry token. It may also include the following fields: 'subject', 'issuer', and 'audience'.
-
-### Nginx Configuration 
-
-```
-server {
-       listen         80 default_server;
-       listen         [::]:80 default_server;
-       server_name    rosefire.csse.rose-hulman.edu;
-       return         301 https://$server_name$request_uri;
-}
-
-server {
-       listen              443 ssl default_server;
-       listen              [::]:443 ssl default_server;
-       server_name         rosefire.csse.rose-hulman.edu;
-       ssl_certificate     /etc/nginx/ssl/nginx.crt;
-       ssl_certificate_key /etc/nginx/ssl/nginx.key;
-
-       location / {
-            proxy_pass       http://localhost:8080;
-            proxy_set_header Host      $host;
-            proxy_set_header X-Real-IP $remote_addr;
-       }
-}
-
-```
+In order to run this server, a `secrets.json` file is required. It must have a 'key' field that is the cipher key to the registry tokens that are generated.

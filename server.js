@@ -98,8 +98,7 @@ app.post('/api/auth', function (req, res) {
   var tokenData = {
     uid: username, 
     email: email, 
-    domain: "rose-hulman.edu", 
-    timestamp: moment().format()
+    domain: "rose-hulman.edu"
   };
   var token = tokenGenerator.createToken(tokenData, tokenOptions);
   console.log("Generated token authenticating " + username);

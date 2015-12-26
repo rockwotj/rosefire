@@ -382,17 +382,6 @@ public class MainServlet extends HttpServlet {
 
 ## Production Setup
 
-This is a simple nodejs app, managed by [The Guv'nor](https://github.com/tableflip/guvnor) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.
-### The Guv'nor
+This is a simple nodejs app, managed by [Forever](https://github.com/foreverjs/forever) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.
 
-Make sure the Guv'nor is set up. See the [latest deployment instructions](https://github.com/tableflip/guvnor#install) for help. Everything should already be set up on the rosefire server.
-
-### Deployment :shipit:
-
-To deploy the app, The Gov'nor can do it for you. See [this](https://github.com/tableflip/guvnor/blob/master/docs/apps.md#start-stop-restart-etc) for details. Don't forget to set the SECRETS_FILE environment variable!
-
-Make sure nginx is set up over HTTPS to proxy to localhost:8080.
-
-### Secrets File
-
-In order to run this server, a `secrets.json` file is required. It must have a 'key' field that is the cipher key to the registry tokens that are generated.
+To manage the production app, just checkout `~/README` and it should explain everything. The server should automatically be started on reboot.

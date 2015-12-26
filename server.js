@@ -9,8 +9,19 @@ var fs = require('fs');
 var encrypter = require('simple-encryptor');
 
 var ldapConfig = {
-  url: 'ldap://rose-hulman.edu:389',
-  baseDN: 'dc=rose-hulman,dc=edu'
+  url: 'ldaps://rose-hulman.edu:636',
+  baseDN: 'dc=rose-hulman,dc=edu',
+  tlsOptions: {
+    agent: false,
+    rejectUnauthorized: false
+  },
+  logging: {
+    name: 'ActiveDirectory',
+    streams: [
+      { level: 'error',
+        stream: process.stdout }
+    ]
+  }
 };
 var rose = new ActiveDirectory(ldapConfig);
 

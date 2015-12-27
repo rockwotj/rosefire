@@ -285,7 +285,6 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         rosefire_token = self.request.cookies.get('rosefire_token')
         if rosefire_token:
-            print rosefire_token
             auth_data = RosefireTokenVerifier(SECRET).verify(rosefire_token)
             self.response.write("You're logged in as: " + auth_data.email)
         else:

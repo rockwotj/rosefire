@@ -1,9 +1,11 @@
 # Rose-Hulman Authentication API
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.2.0-green.svg)](#android)
+[![Android](https://img.shields.io/badge/android-v1.2.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
+[![Python](https://img.shields.io/badge/python-v1.0.1-yellow.svg)](#python)
+[![Java](https://img.shields.io/badge/java-v1.0.2-green.svg)](#java)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -49,7 +51,7 @@ This will then return a JSON object like the following.
 }
 ```
 
-Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin to false in the `/api/auth/` endpoint. No one else is allowed to have admin access for security reasons.
+Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin option to false in the `/api/auth/` endpoint. No one else is allowed to have admin access for security reasons.
 
 #### POST `/api/auth/`
 
@@ -269,6 +271,8 @@ never share your Secret with a connected client. Only your registry token is saf
 
 ### Python
 
+[![Python](https://img.shields.io/badge/python-v1.0.1-yellow.svg)](#python)
+
 **Step 1**: The library is installable as a pip package. Install it using the below command.
 
 ```shell
@@ -301,6 +305,8 @@ class MainHandler(webapp2.RequestHandler):
 To get this working on GAE you need to follow [these instructions](https://cloud.google.com/appengine/docs/python/tools/libraries27?hl=en#vendoring) to get third party libraries to work.
 
 ### Java
+
+[![Java](https://img.shields.io/badge/java-v1.0.2-green.svg)](#java)
 
 **Step 1**: Add jitpack as a maven repo to either your pom.xml or your build.gradle
 

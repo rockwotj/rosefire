@@ -221,7 +221,7 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu",
   } else {
     // User logged in successfully 
   }
-};
+});
 ```
 
 **Optional Step:** If you're using Angularfire or some other wrapper around firebase, you'll want to use the globally attached `Rosefire.getToken` function (example using [AngularFire](https://www.firebase.com/docs/web/libraries/angular/quickstart.html), although make sure you follow [best practices](https://www.firebase.com/docs/web/libraries/angular/guide/beyond-angularfire.html)).

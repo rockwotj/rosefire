@@ -216,7 +216,7 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.fire
 ```javascript
 var myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
 myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu", "Pa$sW0rd", function(err, authData) {
-  if (error) {
+  if (err) {
     // User not logged in!
   } else {
     // User logged in successfully 

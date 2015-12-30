@@ -93,7 +93,7 @@ public class RosefireAuth {
      * @param handler  A Firebase AuthResultHandler for callbacks.
      */
     public void authWithRoseHulman(String email, String password, AuthResultHandler handler) {
-        authWithRoseHulman(email, password, handler, null);
+        authWithRoseHulman(email, password, null, handler);
     }
 
     /**
@@ -110,7 +110,7 @@ public class RosefireAuth {
      * @param handler  A Firebase AuthResultHandler for callbacks.
      * @param options  The options for the auth token that is generated on the server.
      */
-    public void authWithRoseHulman(String email, String password, AuthResultHandler handler, TokenOptions options) {
+    public void authWithRoseHulman(String email, String password, TokenOptions options, AuthResultHandler handler) {
         if (DEBUG) {
             Log.d(TAG, "Authenticating user " + email);
         }

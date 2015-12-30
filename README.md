@@ -1,7 +1,7 @@
 # Rose-Hulman Authentication API
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](#android)
+[![Android](https://img.shields.io/badge/android-v1.0.8-green.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
 
@@ -101,7 +101,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
+[![Android](https://img.shields.io/badge/android-v1.0.8-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.8)
 
 **Step 1:** Add jitpack in your build.gradle at the end of repositories:
 
@@ -118,7 +118,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.7'
+  compile 'com.github.rockwotj:rosefire:android-v1.0.8'
 }
 ```
 

@@ -142,8 +142,8 @@ public class RosefireAuth {
      * https://github.com/rockwotj/rose-firebase-auth#post-apiauth</a></p>
      */
     public static class TokenOptions {
-        private Integer expires;
-        private Integer notBefore;
+        private Long expires;
+        private Long notBefore;
         private Boolean admin;
 
         /**
@@ -161,13 +161,13 @@ public class RosefireAuth {
          * @param expires   A timestamp of when the token is invalid.
          * @param notBefore A timestamp of when the token should start being valid.
          */
-        public TokenOptions(Integer expires, Integer notBefore, Boolean admin) {
+        public TokenOptions(Long expires, Long notBefore, Boolean admin) {
             this.expires = expires;
             this.notBefore = notBefore;
             this.admin = admin;
         }
 
-        public Integer getExpires() {
+        public Long getExpires() {
             return expires;
         }
 
@@ -176,11 +176,11 @@ public class RosefireAuth {
          *
          * @param expires A timestamp of when the token is invalid.
          */
-        public void setExpires(Integer expires) {
+        public void setExpires(Long expires) {
             this.expires = expires;
         }
 
-        public Integer getNotBefore() {
+        public Long getNotBefore() {
             return notBefore;
         }
 
@@ -189,7 +189,7 @@ public class RosefireAuth {
          *
          * @param notBefore A timestamp of when the token should start being valid.
          */
-        public void setNotBefore(Integer notBefore) {
+        public void setNotBefore(Long notBefore) {
             this.notBefore = notBefore;
         }
 

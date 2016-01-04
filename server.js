@@ -80,6 +80,42 @@ app.use('/api/auth', function (req, res, next) {
   }
 });
 
+app.user('/api/auth', function (req, res, next) {
+  if (req.query.groups || req.body.groups) {
+    var email = req.body.email;
+    var username = req.body.username;
+    var password = req.body.password;
+    rose.getGroupMembershipForUser({bindDN: email, bindCredentials: password}, username, function(err, groups) {
+      if (err || !groups) {
+        console.log(email + " failed authentication!");
+        res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
+      } else {
+        async.parallel({
+          isStudent: function(callback) {
+            async.any(groups, function(item, cb) {
+              cb(item.cn.startsWith("Stu"));
+            }, callback.bind(undefined, null));
+          },
+          isInstructor: function(callback) {
+            async.any(groups, function(item, cb) {
+              cb(item.cn === "Instructor");
+            }, callback.bind(undefined, null));
+          }
+        }, function(err, results) {
+          if (err) {
+            res.status(500).json({error: err.toString(), status:500});
+          } else {
+            req.body.groups = results;
+            next();
+          }
+        });
+      }
+    });
+  } else {
+    next();
+  }
+});
+
 app.post('/api/auth', function (req, res) {
   var email = req.body.email;
   var username = extractEmailUsername(email);
@@ -100,6 +136,10 @@ app.post('/api/auth', function (req, res) {
     email: email, 
     domain: "rose-hulman.edu"
   };
+  if (req.body.groups) {
+    tokenData.isStudent = req.body.groups.isStudent;
+    tokenData.isInstructor = req.body.groups.isInstructor;
+  }
   var token = tokenGenerator.createToken(tokenData, tokenOptions);
   console.log("Generated token authenticating " + username);
   res.json({token: token, timestamp: tokenData.timestamp, username: tokenData.uid});

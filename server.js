@@ -142,8 +142,7 @@ app.post('/api/auth', function (req, res) {
   var tokenGenerator = new FirebaseTokenGenerator(secret); 
   var tokenData = {
     uid: username, 
-    email: email, 
-    domain: "rose-hulman.edu"
+    provider: "rose-hulman"
   };
   if (req.body.group) {
     tokenData.group = req.body.group;

@@ -1,6 +1,6 @@
 # Rose-Hulman Authentication API
 
-![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
+![Server](https://img.shields.io/badge/server-v1.1.0-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.2.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
@@ -19,10 +19,12 @@ Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://
 
 Tokens recieved from this service will have the following fields, which can accessed in your firebase rules. More information about this can be found in [Firebase's Custom Auth Documentation](https://www.firebase.com/docs/web/guide/login/custom.html).
 
-```json
-uid: (String) the Rose username of the user
-email: (String) the email of the user
-domain: (String) "rose-hulman.edu"
+```
+{
+  "uid": (String) the Rose username of the user,
+  "provider": (String) 'rose-hulman',
+  "group": (String, Optional) either 'STUDENT', 'INSTRUCTOR', or 'OTHER'
+}
 ```
 
 ### Endpoints
@@ -43,10 +45,10 @@ A post request to `/api/register/` requires the following parameters in the JSON
 
 This will then return a JSON object like the following.
 
-```json
+```
 {
   "username": "rockwotj",
-  "timestamp": "<ISO formatted timestamp>", 
+  "timestamp": 2342134323, // Seconds since the epoch
   "registryToken": "<YOUR REGISTRY TOKEN HERE>"
 }
 ```
@@ -63,6 +65,7 @@ A post request to `/api/auth/` requires the following parameters in the JSON bod
   "password": "Pas$w0rd", 
   "registryToken": "<REGISTRY TOKEN HERE>",
   "options": {
+    "group": false,
     "expires": 12340192830,
     "notBefore": 1234234134,
     "admin": false
@@ -75,6 +78,7 @@ These are the options for the endpoint, more information can be found [here](htt
 * <b>expires</b>: (Integer) A timestamp of when the token is invalid.
 * <b>notBefore</b>: (Integer) A timestamp of when the token should start being valid.
 * <b>admin</b>: (Boolean) If true, then all security rules are disabled for this user. This can only be true for the user who the token is registred with.
+* <b>group</b>: (Boolean) If true, then 'STUDENT' or 'INSTRUCTOR' group will be looked up using LDAP. Please note that is causes the request to be about four times longer with this set to true.
 
 This endpoint returns an object that looks like this
 

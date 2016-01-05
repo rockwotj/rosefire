@@ -38,7 +38,7 @@ public class JWTDecoder {
                 throw new RosefireError("Wrong Algorithm!");
             }
 
-            String secureBits = new StringBuilder(encodedHeader).append(TOKEN_SEP).append(encodedClaims).toString();
+            String secureBits = encodedHeader + TOKEN_SEP + encodedClaims;
 
             if (!sig.equals(sign(secret, secureBits))) {
                 throw new RosefireError("Token generated with invalid secret!");

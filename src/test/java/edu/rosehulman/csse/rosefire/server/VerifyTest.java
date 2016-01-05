@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 public class VerifyTest {
 
-    private static final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZWJ1ZyI6ZmFsc2UsImQiOnsidWlkIjoicm9ja3dvdGoiLCJkb21haW4iOiJyb3NlLWh1bG1hbi5lZHUiLCJlbWFpbCI6InJvY2t3b3RqQHJvc2UtaHVsbWFuLmVkdSIsInRpbWVzdGFtcCI6IjIwMTUtMTItMjNUMTU6MjU6MTQtMDU6MDAifSwidiI6MCwiYWRtaW4iOnRydWUsImlhdCI6MTQ1MDkwMjMxNH0.P50l5YvcRNO4IQ5WT9sKfaBFBiJHU5yxLnCxfJ5xprI";
+    private static final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZWJ1ZyI6ZmFsc2UsImQiOnsidWlkIjoicm9ja3dvdGoiLCJwcm92aWRlciI6InJvc2UtaHVsbWFuIiwiZ3JvdXAiOiJTVFVERU5UIn0sInYiOjAsImFkbWluIjp0cnVlLCJpYXQiOjE0NTA5MDIzMTR9.rO9YBglcdPZFAPQloEcbvZmQ24RDoTxu9aGxyZ7msME";
 
 
 
@@ -17,8 +17,9 @@ public class VerifyTest {
         String secret = "secret";
         AuthData userInfo = new RosefireTokenVerifier(secret).verify(token);
         assertEquals("rockwotj@rose-hulman.edu", userInfo.getEmail());
-        assertEquals("rose-hulman.edu", userInfo.getDomain());
+        assertEquals("rose-hulman", userInfo.getProvider());
         assertEquals("rockwotj", userInfo.getUsername());
+        assertEquals(AuthData.Group.STUDENT, userInfo.getGroup());
         assertEquals(new Date(1450902314000L), userInfo.getIssuedAt());
     }
 

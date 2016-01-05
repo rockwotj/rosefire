@@ -5,15 +5,31 @@ import java.util.Date;
 
 public class AuthData {
 
-    private final String username;
-    private final String domain;
-    private final String email;
-    private final Date issuedAt;
+    enum Group {
+        STUDENT,
+        INSTRUCTOR,
+        OTHER
+    }
 
-    public AuthData(String username, String domain, String email, Date issuedAt)  {
+    private final String username;
+    private final String provider;
+    private final Date issuedAt;
+    private final Group group;
+
+    public AuthData(String username, String domain, String group, Date issuedAt)  {
         this.username = username;
-        this.domain = domain;
-        this.email = email;
+        this.provider = domain;
+        if (group != null) {
+            if (group.equalsIgnoreCase("STUDENT")) {
+                this.group = Group.STUDENT;
+            } else if (group.equalsIgnoreCase("INSTRUCTOR")) {
+                this.group = Group.INSTRUCTOR;
+            } else {
+                this.group = Group.OTHER;
+            }
+        } else {
+            this.group = null;
+        }
         this.issuedAt = issuedAt;
     }
 
@@ -21,15 +37,20 @@ public class AuthData {
         return username;
     }
 
-    public String getDomain() {
-        return domain;
+    public String getProvider() {
+        return provider;
     }
 
     public String getEmail() {
-        return email;
+        return username + "@rose-hulman.edu";
     }
 
     public Date getIssuedAt() {
         return issuedAt;
     }
+
+    public Group getGroup() {
+        return group;
+    }
+
 }

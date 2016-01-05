@@ -15,6 +15,7 @@
 @property(strong, nonatomic) NSNumber* admin;
 @property(strong, nonatomic) NSNumber* notBefore;
 @property(strong, nonatomic) NSNumber* expires;
+@property(strong, nonatomic) NSNumber* group;
 
 @end
 

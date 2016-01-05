@@ -55,6 +55,9 @@
         if (tokenOptions.notBefore) {
             [options setObject:@"notBefore" forKey:tokenOptions.notBefore];
         }
+        if (tokenOptions.group) {
+            [options setObject:@"group" forKey:tokenOptions.group];
+        }
         [params setObject:@"options" forKey:options];
     }
     

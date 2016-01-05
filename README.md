@@ -86,8 +86,7 @@ This endpoint returns an object that looks like this
 {
   "token": "<Auth token for user@rose-hulman.edu>",
   "timestamp": "<ISO formatted timestamp>",
-  "username": "user",
-  "group": "STUDENT, INSTRUCTOR or OTHER"
+  "username": "user"
 }
 ```
 

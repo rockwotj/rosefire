@@ -3,9 +3,9 @@ var FirebaseTokenGenerator = require("firebase-token-generator");
 var Express = require('express');
 var BodyParser = require('body-parser');
 var corser = require("corser");
-var moment = require('moment');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
+var async = require('async');
 var encrypter = require('simple-encryptor');
 
 var ldapConfig = {
@@ -58,6 +58,7 @@ app.use(function (req, res, next) {
         res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
         return; 
       }
+      req.body.username = extractEmailUsername(email);
       next();
     });
   }
@@ -80,8 +81,8 @@ app.use('/api/auth', function (req, res, next) {
   }
 });
 
-app.user('/api/auth', function (req, res, next) {
-  if (req.query.groups || req.body.groups) {
+app.use('/api/auth', function (req, res, next) {
+  if (req.body.options && req.body.options.group) {
     var email = req.body.email;
     var username = req.body.username;
     var password = req.body.password;
@@ -93,32 +94,40 @@ app.user('/api/auth', function (req, res, next) {
         async.parallel({
           isStudent: function(callback) {
             async.any(groups, function(item, cb) {
-              cb(item.cn.startsWith("Stu"));
+              cb(item.cn.startsWith('Stu'));
             }, callback.bind(undefined, null));
           },
           isInstructor: function(callback) {
             async.any(groups, function(item, cb) {
-              cb(item.cn === "Instructor");
+              cb(item.cn === 'Instructor');
             }, callback.bind(undefined, null));
           }
         }, function(err, results) {
           if (err) {
             res.status(500).json({error: err.toString(), status:500});
           } else {
-            req.body.groups = results;
+            if (results.isInstructor) {
+              req.body.group = 'INSTRUCTOR';
+            } else if (results.isStudent) {
+              req.body.group = 'STUDENT';
+            } else {
+              req.body.group = 'OTHER';
+            }
+            console.log("Found group to be " + req.body.group + " for user " + username);
             next();
           }
         });
       }
     });
   } else {
+    req.body.group = false;
     next();
   }
 });
 
 app.post('/api/auth', function (req, res) {
   var email = req.body.email;
-  var username = extractEmailUsername(email);
+  var username = req.body.username;
   var admin = req.body.admin;
   var isAdmin = username === admin;
   var password = req.body.password;
@@ -136,10 +145,10 @@ app.post('/api/auth', function (req, res) {
     email: email, 
     domain: "rose-hulman.edu"
   };
-  if (req.body.groups) {
-    tokenData.isStudent = req.body.groups.isStudent;
-    tokenData.isInstructor = req.body.groups.isInstructor;
+  if (req.body.group) {
+    tokenData.group = req.body.group;
   }
+  delete tokenOptions.group;
   var token = tokenGenerator.createToken(tokenData, tokenOptions);
   console.log("Generated token authenticating " + username);
   res.json({token: token, timestamp: tokenData.timestamp, username: tokenData.uid});
@@ -156,13 +165,13 @@ app.use('/api/register', function (req, res, next) {
 
 app.post('/api/register', function (req, res, next) {
   var email = req.body.email;
-  var username = extractEmailUsername(email);
+  var username = req.body.username;
   var password = req.body.password;
   var secret = req.body.secret;
   var tokenData = {
     admin: username,
     secret: secret,
-    timestamp: moment().format()
+    timestamp: Math.floor(Date.now() / 1000)
   };
   var token = engine.encrypt(tokenData);
   console.log("Generated registryToken for " + username);

@@ -115,7 +115,7 @@
             dataType: 'json'
         })
         .done(function(data) {
-          var msg = "<p>Token:</p><p><textarea class='form-control copyable' rows='3'>" + data.registryToken + "</textarea></p><p> <button class='btn btn-default copier'>Copy</button> Created for " + data.username + " at " + data.timestamp + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
+          var msg = "<p>Token:</p><p><textarea class='form-control copyable' rows='3'>" + data.registryToken + "</textarea></p><p> <button class='btn btn-default copier'>Copy</button> Created for " + data.username + " at " + new Date(data.timestamp * 1000) + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
           successAlert.html(msg);
           successAlert.show();
           $('.copier').click(function(event) {

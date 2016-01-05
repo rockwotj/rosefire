@@ -1,11 +1,11 @@
 # Rose-Hulman Authentication API
 
-![Server](https://img.shields.io/badge/server-v1.1.0-red.svg)
-[![Android](https://img.shields.io/badge/android-v1.2.0-brightgreen.svg)](#android)
-[![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
+![Server](https://img.shields.io/badge/server-v2.0.0-red.svg)
+[![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
+[![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
-[![Python](https://img.shields.io/badge/python-v1.0.1-yellow.svg)](#python)
-[![Java](https://img.shields.io/badge/java-v1.0.2-green.svg)](#java)
+[![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
+[![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -107,7 +107,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.2.0-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.2.0)
+[![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.3.0)
 
 **Step 1:** Add jitpack in your build.gradle at the end of repositories:
 
@@ -124,7 +124,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.2.0'
+  compile 'com.github.rockwotj:rosefire:android-v1.3.0'
 }
 ```
 
@@ -148,12 +148,12 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 ### iOS
 
-![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)
+![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)
 
 **Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.0.3'
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.1.0'
 ```
 
 Then run `pod install`
@@ -275,12 +275,12 @@ never share your Secret with a connected client. Only your registry token is saf
 
 ### Python
 
-[![Python](https://img.shields.io/badge/python-v1.0.1-yellow.svg)](#python)
+[![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 
 **Step 1**: The library is installable as a pip package. Install it using the below command.
 
 ```shell
-pip install https://github.com/rockwotj/rosefire/archive/python-v1.0.1.zip
+pip install https://github.com/rockwotj/rosefire/archive/python-v1.1.0.zip
 ```
 
 **Step 2**: Get a token from rosefire (via client libraries or on the server) then verify the contents of the JWT created from Rosefire. The below example is using [webapp2](https://webapp-improved.appspot.com/), please note that you'll want to do more error checking, as both the get_token and verify functions can throw Exceptions.
@@ -310,7 +310,7 @@ To get this working on GAE you need to follow [these instructions](https://cloud
 
 ### Java
 
-[![Java](https://img.shields.io/badge/java-v1.0.2-green.svg)](#java)
+[![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
 
 **Step 1**: Add jitpack as a maven repo to either your pom.xml or your build.gradle
 
@@ -335,13 +335,13 @@ repositories {
 <dependency>
 	<groupId>com.github.rockwotj</groupId>
 	<artifactId>rosefire</artifactId>
-	<version>java-v1.0.2</version>
+	<version>java-v1.1.0</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:java-v1.0.2'
+  compile 'com.github.rockwotj:rosefire:java-v1.1.0'
 }
 ```
 

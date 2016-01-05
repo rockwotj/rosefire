@@ -126,12 +126,13 @@ public class RosefireAuth {
         private Long expires;
         private Long notBefore;
         private Boolean admin;
+        private Boolean group;
 
         /**
          * Create an empty options object
          */
         public TokenOptions() {
-            this(null, null, null);
+            this(null, null, null, null);
         }
 
         /**
@@ -141,11 +142,14 @@ public class RosefireAuth {
          *                  This can only be true for the user who the token is registred with.
          * @param expires   A timestamp of when the token is invalid.
          * @param notBefore A timestamp of when the token should start being valid.
+         * @param group If true, then 'STUDENT' or 'INSTRUCTOR' group will be looked
+         *              up using LDAP.
          */
-        public TokenOptions(Long expires, Long notBefore, Boolean admin) {
+        public TokenOptions(Long expires, Long notBefore, Boolean admin, Boolean group) {
             this.expires = expires;
             this.notBefore = notBefore;
             this.admin = admin;
+            this.group = group;
         }
 
         public Long getExpires() {
@@ -175,7 +179,7 @@ public class RosefireAuth {
         }
 
         /**
-         * Set if the user has all of the firebase options disabled.
+         * Set if the user has all of the firebase rules disabled.
          *
          * @param admin If true, then all security rules are disabled for this user.
          *              This can only be true for the user who the token is registred with.
@@ -186,6 +190,22 @@ public class RosefireAuth {
 
         public Boolean isAdmin() {
             return admin;
+        }
+
+        /**
+         *
+         * Set if the payload should include the user's group.
+         *
+         * @param group If true, then 'STUDENT' or 'INSTRUCTOR' group will be looked
+         *              up using LDAP. Please note that is causes the request to be
+         *              about four times longer with this set to true.
+         */
+        public void setGroup(Boolean group) {
+            this.group = group;
+        }
+
+        public Boolean queryForGroup() {
+            return group;
         }
     }
 
@@ -221,6 +241,9 @@ public class RosefireAuth {
                 }
                 if (mOptions.getNotBefore() != null) {
                     options.put("notBefore", mOptions.getNotBefore().intValue());
+                }
+                if (mOptions.queryForGroup() != null) {
+                    options.put("group", mOptions.queryForGroup().booleanValue());
                 }
                 params.put("options", options);
             }

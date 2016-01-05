@@ -1,9 +1,11 @@
 # Rose-Hulman Authentication API
 
 ![Server](https://img.shields.io/badge/server-v1.0.0-yellow.svg)
-[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](#android)
+[![Android](https://img.shields.io/badge/android-v1.2.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.0.3-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
+[![Python](https://img.shields.io/badge/python-v1.0.1-yellow.svg)](#python)
+[![Java](https://img.shields.io/badge/java-v1.0.2-green.svg)](#java)
 
 This is a simple service that authenticates Rose-Hulman students via Kerberos Login and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
@@ -49,7 +51,7 @@ This will then return a JSON object like the following.
 }
 ```
 
-Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin to false in the `/api/auth/` endpoint. No one else is allowed to have admin access for security reasons.
+Note: When the person who the project is registered under is authenticated via the `/api/auth/` endpoint, they have full read-write access to the entire firebase repo by default. This can be disabled by explictly setting admin option to false in the `/api/auth/` endpoint. No one else is allowed to have admin access for security reasons.
 
 #### POST `/api/auth/`
 
@@ -101,7 +103,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.0.7-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.0.7)
+[![Android](https://img.shields.io/badge/android-v1.2.0-green.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.2.0)
 
 **Step 1:** Add jitpack in your build.gradle at the end of repositories:
 
@@ -118,7 +120,7 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.0.7'
+  compile 'com.github.rockwotj:rosefire:android-v1.2.0'
 }
 ```
 
@@ -216,12 +218,12 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.fire
 ```javascript
 var myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
 myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu", "Pa$sW0rd", function(err, authData) {
-  if (error) {
+  if (err) {
     // User not logged in!
   } else {
     // User logged in successfully 
   }
-};
+});
 ```
 
 **Optional Step:** If you're using Angularfire or some other wrapper around firebase, you'll want to use the globally attached `Rosefire.getToken` function (example using [AngularFire](https://www.firebase.com/docs/web/libraries/angular/quickstart.html), although make sure you follow [best practices](https://www.firebase.com/docs/web/libraries/angular/guide/beyond-angularfire.html)).
@@ -252,7 +254,6 @@ app.controller("MyAuthCtrl", ["$firebaseAuth", "$window",
 
 ```
 
-
 ## Server Side Use and Libraries
 
 Want to use Rose-Hulman Authentication on your server without learning about LDAP? Feel free to use Rosefire as a [microservice](http://martinfowler.com/articles/microservices.html) for authentication and these libraries to make your life easier. 
@@ -269,6 +270,8 @@ never share your Secret with a connected client. Only your registry token is saf
 
 
 ### Python
+
+[![Python](https://img.shields.io/badge/python-v1.0.1-yellow.svg)](#python)
 
 **Step 1**: The library is installable as a pip package. Install it using the below command.
 
@@ -303,6 +306,8 @@ To get this working on GAE you need to follow [these instructions](https://cloud
 
 ### Java
 
+[![Java](https://img.shields.io/badge/java-v1.0.2-green.svg)](#java)
+
 **Step 1**: Add jitpack as a maven repo to either your pom.xml or your build.gradle
 
 ```maven
@@ -326,13 +331,13 @@ repositories {
 <dependency>
 	<groupId>com.github.rockwotj</groupId>
 	<artifactId>rosefire</artifactId>
-	<version>java-v1.0.1</version>
+	<version>java-v1.0.2</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:java-v1.0.1'
+  compile 'com.github.rockwotj:rosefire:java-v1.0.2'
 }
 ```
 

@@ -57,7 +57,7 @@ def get_token(registry_token, email, password, options=None):
     }
     if options is not None:
         data['options'] = {}
-        for key in ['admin', 'expires', 'notBefore']:
+        for key in ['admin', 'expires', 'notBefore', 'group']:
             if key in options:
                 data['options'][key] = options[key]
     response = None
@@ -74,11 +74,12 @@ def get_token(registry_token, email, password, options=None):
 
 class AuthData():
 
-    def __init__(self, username, domain, email, issued_at):
+    def __init__(self, username, provider, group, issued_at):
         self.username = username
-        self.domain = domain
-        self.email = email
+        self.provider = provider
+        self.group = group
         self.issued_at = issued_at
+        self.email = username + "@rose-hulman.edu"
 
 class RosefireTokenVerifier():
 
@@ -100,7 +101,7 @@ class RosefireTokenVerifier():
             decoded_claims = _decode_json(encoded[1])
             issued_at = datetime.fromtimestamp(decoded_claims['iat'])
             payload = decoded_claims['d']
-            return AuthData(payload['uid'], payload['domain'], payload['email'], issued_at)
+            return AuthData(payload['uid'], payload['provider'], payload.get('group'), issued_at)
         except:
             raise RosefireError('Error decoding token')
 

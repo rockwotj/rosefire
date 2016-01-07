@@ -94,7 +94,8 @@ app.use('/api/auth', function (req, res, next) {
         async.parallel({
           isStudent: function(callback) {
             async.any(groups, function(item, cb) {
-              cb(item.cn.startsWith('Stu'));
+              // Is a regular OR international student.
+              cb(item.cn.startsWith('Stu') || item.cn === "all-sg");
             }, callback.bind(undefined, null));
           },
           isInstructor: function(callback) {

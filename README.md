@@ -1,6 +1,6 @@
 # Rose-Hulman Authentication API
 
-![Server](https://img.shields.io/badge/server-v2.0.0-red.svg)
+![Server](https://img.shields.io/badge/server-v1.1.0-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
@@ -268,7 +268,7 @@ NOTE: You can currently get tokens on all platforms except ios. You'll need to u
 
 ### A Note About Security
 
-**IMPORTANT:** Because token verifier requires your secret, you should only verifiy
+**IMPORTANT:** Because token verifier requires your secret, you should only verify
 tokens on *trusted servers*. Never embed your Secret directly into your application and
 never share your Secret with a connected client. Only your registry token is safe to share with clients.
 

@@ -1,4 +1,0 @@
-#! /bin/bash
-if ["$(hostname)" == "rosefire"]; then
-  sudo service rosefire start
-fi

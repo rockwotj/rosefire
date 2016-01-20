@@ -1,3 +1,5 @@
+'use strict';
+
 var ActiveDirectory = require('activedirectory');
 var FirebaseTokenGenerator = require("firebase-token-generator");
 var Express = require('express');
@@ -31,14 +33,14 @@ var secrets = JSON.parse(fs.readFileSync(secretsFile));
 
 var engine = encrypter(secrets.key);
 
-var extractEmailUsername = function(email) {
-  var emailSplit = email.split("@");
-  return emailSplit[0];
+var extractEmailUsername = (email) => {
+  var [username, domain] = email.split("@");
+  return username;
 };
 
 var app = Express();
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.sendFile(__dirname + "/public/index.html");    
 });
 
@@ -46,13 +48,13 @@ app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({extended: false}));
 app.use(corser.create())
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   var email = req.body.email;
   var password = req.body.password;
   if (!email || !password ) {
-    res.status(400).json({error: 'Missing email or password in request', status: 400});
+    res.status(400).json({error: 'Missing email or password', status: 400});
   } else {
-    rose.authenticate(email, password, function (err, auth) {
+    rose.authenticate(email, password, (err, auth) => {
       if (err || !auth) {
         console.log(email + " failed authentication!");
         res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
@@ -64,7 +66,7 @@ app.use(function (req, res, next) {
   }
 });
 
-app.use('/api/auth', function (req, res, next) {
+app.use('/api/auth', (req, res, next) => {
   var token = req.body.registryToken;
   if (!token) {
     res.status(400).json({error: 'Missing registryToken in request', status: 400});
@@ -81,29 +83,30 @@ app.use('/api/auth', function (req, res, next) {
   }
 });
 
-app.use('/api/auth', function (req, res, next) {
+app.use('/api/auth', (req, res, next) => {
   if (req.body.options && req.body.options.group) {
     var email = req.body.email;
     var username = req.body.username;
     var password = req.body.password;
-    rose.getGroupMembershipForUser({bindDN: email, bindCredentials: password}, username, function(err, groups) {
+    var creds = {bindDN: email, bindCredentials: password};
+    rose.getGroupMembershipForUser(creds, username, (err, groups) => {
       if (err || !groups) {
         console.log(email + " failed authentication!");
         res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
       } else {
         async.parallel({
-          isStudent: function(callback) {
-            async.any(groups, function(item, cb) {
+          isStudent: (callback) => {
+            async.any(groups, (item, cb) => {
               // Is a regular OR international student.
               cb(item.cn.startsWith('Stu') || item.cn === "all-sg");
             }, callback.bind(undefined, null));
           },
-          isInstructor: function(callback) {
-            async.any(groups, function(item, cb) {
+          isInstructor: (callback) => {
+            async.any(groups, (item, cb) => {
               cb(item.cn === 'Instructor');
             }, callback.bind(undefined, null));
           }
-        }, function(err, results) {
+        }, (err, results) => {
           if (err) {
             res.status(500).json({error: err.toString(), status:500});
           } else {
@@ -126,7 +129,7 @@ app.use('/api/auth', function (req, res, next) {
   }
 });
 
-app.post('/api/auth', function (req, res) {
+app.post('/api/auth', (req, res) => {
   var email = req.body.email;
   var username = req.body.username;
   var admin = req.body.admin;
@@ -134,7 +137,7 @@ app.post('/api/auth', function (req, res) {
   var password = req.body.password;
   var secret = req.body.secret;
   var tokenOptions = req.body.options || {};
-  tokenOptions.debug = false;
+  delete tokenOptions.debug;
   if (isAdmin && !tokenOptions.hasOwnProperty("admin")) {
     tokenOptions.admin = true;
   } else if (!isAdmin) {
@@ -154,7 +157,7 @@ app.post('/api/auth', function (req, res) {
   res.json({token: token, timestamp: tokenData.timestamp, username: tokenData.uid});
 });
 
-app.use('/api/register', function (req, res, next) {
+app.use('/api/register', (req, res, next) => {
   var secret = req.body.secret;
   if (!secret) {
     res.status(400).json({error: 'Missing firebase secret in request', status: 400});
@@ -163,7 +166,7 @@ app.use('/api/register', function (req, res, next) {
   }
 });
 
-app.post('/api/register', function (req, res, next) {
+app.post('/api/register', (req, res, next) => {
   var email = req.body.email;
   var username = req.body.username;
   var password = req.body.password;
@@ -178,7 +181,7 @@ app.post('/api/register', function (req, res, next) {
   res.json({registryToken: token, timestamp: tokenData.timestamp, username: username}); 
 });
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   console.error(err.toString());
   res.status(err.status).json({error: err.toString(), status: err.status});
 });
@@ -186,7 +189,7 @@ app.use(function(err, req, res, next) {
 var port = 8080;
 var ip_address = '127.0.0.1';
 
-var server = app.listen(port, ip_address, function () {
+var server = app.listen(port, ip_address, () => {
     console.log('Rose Firebase Auth service listening at http://localhost:%s', port);
 });
 

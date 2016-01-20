@@ -392,4 +392,6 @@ public class MainServlet extends HttpServlet {
 
 This is a simple nodejs app, managed by [Forever](https://github.com/foreverjs/forever) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.
 
+This node app uses some es6 features that need to be enabled on boot. As of node 5.4 you need to run the server via: `node --harmony_destructuring server.js` 
+
 To manage the production app, just checkout `~/README` and it should explain everything. The server should automatically be started on reboot.

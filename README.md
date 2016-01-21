@@ -1,6 +1,6 @@
 # Rose-Hulman Authentication API
 
-![Server](https://img.shields.io/badge/server-v1.1.0-red.svg)
+![Server](https://img.shields.io/badge/server-v1.1.1-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)

@@ -35,7 +35,7 @@ var engine = encrypter(secrets.key);
 
 var extractEmailUsername = (email) => {
   var [username, domain] = email.split("@");
-  return username;
+  return username.toLowerCase();
 };
 
 var app = Express();

@@ -137,7 +137,8 @@ app.post('/api/auth', (req, res) => {
   var password = req.body.password;
   var secret = req.body.secret;
   var tokenOptions = req.body.options || {};
-  delete tokenOptions.debug;
+  //delete tokenOptions.debug;
+  tokenOptions.debug = false;
   if (isAdmin && !tokenOptions.hasOwnProperty("admin")) {
     tokenOptions.admin = true;
   } else if (!isAdmin) {

@@ -7,6 +7,10 @@
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 [![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
 
+
+[![JWT](http://jwt.io/assets/badge-compatible.svg)](https://jwt.io)
+
+
 This is a simple service that authenticates Rose-Hulman students via LDAP and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
 ## TL;DR

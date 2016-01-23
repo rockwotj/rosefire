@@ -268,6 +268,8 @@ Want to use Rose-Hulman Authentication on your server without learning about LDA
 
 If you use these libraries, you can either do everything server-side, or you get fetch the tokens using the client libraries, then pass the returned token to your backend and decrypt it on your server. In this case, the SECRET that you use when you [register](https://rosefire.csse.rose-hulman.edu) is whatever you want, but you'll need to use it as a key on your server.
 
+To learn more about how Rosefire works checkout [this link](https://jwt.io/introduction/).
+
 NOTE: You can currently get tokens on all platforms except ios. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase.
 
 ### A Note About Security

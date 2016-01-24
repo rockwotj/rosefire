@@ -262,7 +262,7 @@ app.controller("MyAuthCtrl", ["$firebaseAuth", "$window",
 
 ```
 
-## Server Side Use and Libraries
+## Server Side Use (Without Firebase) and Libraries
 
 Want to use Rose-Hulman Authentication on your server without learning about LDAP? Feel free to use Rosefire as a [microservice](http://martinfowler.com/articles/microservices.html) for authentication and these libraries to make your life easier. 
 

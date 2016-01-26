@@ -394,6 +394,10 @@ public class MainServlet extends HttpServlet {
 
 ```
 
+## Troubleshooting
+
+If you get an 'Invalid MAC' error on Firebase then you most likely missed a character when you copied your secret or registryToken. First try regenerating your registryToken on rosefire, if that doesn't work then try a new secret on Firebase. If you are still having issues, then please file an issue on Rosefire.
+
 ## Production Setup
 
 This is a simple nodejs app, managed by [Forever](https://github.com/foreverjs/forever) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.

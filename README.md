@@ -3,7 +3,7 @@
 ![Server](https://img.shields.io/badge/server-v1.1.1-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)](#ios)
-[![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)](#javascript)
+[![Javascript](https://img.shields.io/badge/javascript-v1.0.2-orange.svg)](#javascript)
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 [![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
 
@@ -212,13 +212,13 @@ Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.fire
 
 ### Javascript
 
-![Javascript](https://img.shields.io/badge/javascript-v1.0.1-orange.svg)
+![Javascript](https://img.shields.io/badge/javascript-v1.0.2-orange.svg)
 
 **Step 1:** You either need to include this script tag, OR download the file and host it on your server. Either way you need to reference this file. Make sure you include this AFTER Firebase.
 
 ```html
 <!-- Include Firebase First! -->
-<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v1.0.1/dist/js/rosefire.min.js"></script>
+<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v1.0.2/dist/js/rosefire.min.js"></script>
 ```
 
 **Step 2:** You're all ready to authenticate if you use [Firebase's plain javascript SDK](https://www.firebase.com/docs/web/api/).

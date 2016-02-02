@@ -7,6 +7,10 @@
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 [![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
 
+
+[![JWT](http://jwt.io/assets/badge-compatible.svg)](https://jwt.io)
+
+
 This is a simple service that authenticates Rose-Hulman students via LDAP and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
 
 ## TL;DR
@@ -258,11 +262,13 @@ app.controller("MyAuthCtrl", ["$firebaseAuth", "$window",
 
 ```
 
-## Server Side Use and Libraries
+## Server Side Use (Without Firebase) and Libraries
 
 Want to use Rose-Hulman Authentication on your server without learning about LDAP? Feel free to use Rosefire as a [microservice](http://martinfowler.com/articles/microservices.html) for authentication and these libraries to make your life easier. 
 
 If you use these libraries, you can either do everything server-side, or you get fetch the tokens using the client libraries, then pass the returned token to your backend and decrypt it on your server. In this case, the SECRET that you use when you [register](https://rosefire.csse.rose-hulman.edu) is whatever you want, but you'll need to use it as a key on your server.
+
+To learn more about how Rosefire works checkout [this link](https://jwt.io/introduction/).
 
 NOTE: You can currently get tokens on all platforms except ios. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase.
 
@@ -388,9 +394,15 @@ public class MainServlet extends HttpServlet {
 
 ```
 
+## Troubleshooting
+
+If you get an 'Invalid MAC' error on Firebase then you most likely missed a character when you copied your secret or registryToken. First try regenerating your registryToken on rosefire, if that doesn't work then try a new secret on Firebase. If you are still having issues, then please file an issue on Rosefire.
+
 ## Production Setup
 
 This is a simple nodejs app, managed by [Forever](https://github.com/foreverjs/forever) that is reverse proxied by nginx. This app also uses [Let's Encrypt](https://letsencrypt.org/) to acquire SSL certificates.
+
+You also need a `secrets.json` file, which can be copied from the sample given in the repo. That file can either live in the project directory or in a location specified by the `SECRETS_FILE` environment variable.	
 
 This node app uses some es6 features that need to be enabled on boot. As of node 5.4 you need to run the server via: `node --harmony_destructuring server.js` 
 

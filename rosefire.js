@@ -30,7 +30,7 @@
     };
     xhr.send(JSON.stringify(data));
   };
-  if (typeof Firebase === "undefined") {
+  if (typeof Firebase !== "undefined") {
     Firebase.prototype.authWithRoseHulman = function(registryToken, email, password, options, callback) {
       var data = {
         registryToken: registryToken,

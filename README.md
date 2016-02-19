@@ -6,7 +6,7 @@
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.4-orange.svg)](#javascript)
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 [![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
-
+[![Node](https://img.shields.io/badge/node-howto-darkgreen.svg)](#node)
 
 [![JWT](http://jwt.io/assets/badge-compatible.svg)](https://jwt.io)
 
@@ -405,7 +405,30 @@ public class MainServlet extends HttpServlet {
 
 ### Node
 
-TODO
+Instead of using my own implementation, you can easily use open source solutions if you get a JWT on the client of your application. 
+
+```bash
+npm install --save jsonwebtoken
+```
+
+This is a simple express endpoint that decodes a token from Rosefire, and returns the auth data.
+
+```node
+var jwt = require('jsonwebtoken');
+
+app.post('/foobar', function (req, res) {
+    // The client can easily use one of the other libraries I've provided to get the 
+    // rosefire_token from the /api/auth endpoint
+    var decoded = jwt.verify(req.query.rosefire_token, SECRET);
+    var payload = decoded.d;
+    var timeIssued = decoded.iat; // integer timestamp of when issued
+    var oneDay = 24 * 60 * 60;
+    var username = payload.uid; // "rockwotj"
+    var provider = payload.provider; // "rose-hulman"
+    res.json({'username': username, 'validUntil': timeIssued + oneDay});
+};
+
+```
 
 ## Troubleshooting
 

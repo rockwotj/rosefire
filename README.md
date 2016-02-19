@@ -11,17 +11,26 @@
 [![JWT](http://jwt.io/assets/badge-compatible.svg)](https://jwt.io)
 
 
-This is a simple service that authenticates Rose-Hulman students via LDAP and returns a [Firebase Custom Auth Token](https://www.firebase.com/docs/web/guide/login/custom.html).
+This is a simple service that authenticates Rose-Hulman students via LDAP and returns a [JSON Web Token](https://jwt.io/introduction/).
 
 ## TL;DR
 
-Start [here](#client-libraries) if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person, otherwise, start reading about the endpoints.
+Start [here](#client-libraries) if you're a [TL;DR](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) kind of person.
 
-Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu) then skip down to [Client Libraries](https://github.com/rockwotj/rosefire/#client-libraries) to see how to integrate this into your Firebase app.
+### Usage with Firebase
+
+1. Get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu) using the secret from your Firebase.
+2. Skip down to [Client Libraries](https://github.com/rockwotj/rosefire/#client-libraries) to see how to integrate this into your Firebase app.
+
+### Standalone Usage
+
+1. Make up a [secure secret](https://www.random.org/strings/?num=1&len=20&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new) then get a registry token from here: [https://rosefire.csse.rose-hulman.edu](https://rosefire.csse.rose-hulman.edu). 
+2. Then go to [Server Libraries](https://github.com/rockwotj/rosefire/#server-side-use-without-firebase-and-libraries) to see how to integrate this into your server.
 
 ## Production Use
 
-Tokens recieved from this service will have the following fields, which can accessed in your firebase rules. More information about this can be found in [Firebase's Custom Auth Documentation](https://www.firebase.com/docs/web/guide/login/custom.html).
+JSON Web Tokens recieved from this service will have the following fields inside the 'd' object of payload. Which, if you're using Firebase, can accessed in your firebase rules. More information about this can be found in [Firebase's Custom Auth Documentation](https://www.firebase.com/docs/web/guide/login/custom.html).
+
 
 ```
 {
@@ -393,6 +402,10 @@ public class MainServlet extends HttpServlet {
 }
 
 ```
+
+### Node
+
+TODO
 
 ## Troubleshooting
 

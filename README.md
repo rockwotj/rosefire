@@ -422,7 +422,7 @@ app.post('/foobar', function (req, res) {
     var decoded = jwt.verify(req.query.rosefire_token, SECRET);
     var payload = decoded.d;
     var timeIssued = decoded.iat; // integer timestamp of when issued
-    var oneDay = 24 * 60 * 60;
+    var oneDay = 24 * 60 * 60 * 1000;
     var username = payload.uid; // "rockwotj"
     var provider = payload.provider; // "rose-hulman"
     res.json({'username': username, 'validUntil': timeIssued + oneDay});

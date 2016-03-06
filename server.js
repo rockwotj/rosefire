@@ -2,10 +2,9 @@
 
 var ActiveDirectory = require('activedirectory');
 var FirebaseTokenGenerator = require("firebase-token-generator");
-var Express = require('express');
+var express = require('express');
 var BodyParser = require('body-parser');
 var corser = require("corser");
-var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var async = require('async');
 var encrypter = require('simple-encryptor');
@@ -20,11 +19,11 @@ var ldapConfig = {
   logging: {
     name: 'ActiveDirectory',
     streams: [
-      { level: 'error',
-        stream: process.stdout }
+      { level: 'error', stream: process.stdout }
     ]
   }
 };
+
 var rose = new ActiveDirectory(ldapConfig);
 
 var secretsFile = process.env.SECRETS_FILE || 'secrets.json';
@@ -38,11 +37,9 @@ var extractEmailUsername = (email) => {
   return username.toLowerCase();
 };
 
-var app = Express();
+var app = express();
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");    
-});
+app.use(express.static('public'));
 
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({extended: false}));
@@ -57,7 +54,7 @@ app.use((req, res, next) => {
     rose.authenticate(email, password, (err, auth) => {
       if (err || !auth) {
         console.log(email + " failed authentication!");
-        res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
+        res.status(401).json({error: "Invalid Rose-Hulman credentials", status: 401});
         return; 
       }
       req.body.username = extractEmailUsername(email);
@@ -86,8 +83,6 @@ app.use('/api/auth', (req, res, next) => {
 app.use('/api/auth', (req, res, next) => {
   if (req.body.options && req.body.options.group) {
     var email = req.body.email;
-    var username = req.body.username;
-    var password = req.body.password;
     var creds = {bindDN: email, bindCredentials: password};
     rose.getGroupMembershipForUser(creds, username, (err, groups) => {
       if (err || !groups) {
@@ -108,7 +103,7 @@ app.use('/api/auth', (req, res, next) => {
           }
         }, (err, results) => {
           if (err) {
-            res.status(500).json({error: err.toString(), status:500});
+            res.status(500).json({error: err.toString(), status: 500});
           } else {
             if (results.isInstructor) {
               req.body.group = 'INSTRUCTOR';
@@ -137,8 +132,7 @@ app.post('/api/auth', (req, res) => {
   var password = req.body.password;
   var secret = req.body.secret;
   var tokenOptions = req.body.options || {};
-  //delete tokenOptions.debug;
-  tokenOptions.debug = false;
+  delete tokenOptions.debug;
   if (isAdmin && !tokenOptions.hasOwnProperty("admin")) {
     tokenOptions.admin = true;
   } else if (!isAdmin) {
@@ -161,7 +155,7 @@ app.post('/api/auth', (req, res) => {
 app.use('/api/register', (req, res, next) => {
   var secret = req.body.secret;
   if (!secret) {
-    res.status(400).json({error: 'Missing firebase secret in request', status: 400});
+    res.status(400).json({error: 'Missing secret in request', status: 400});
   } else {
     next();
   }
@@ -191,6 +185,6 @@ var port = 8080;
 var ip_address = '127.0.0.1';
 
 var server = app.listen(port, ip_address, () => {
-    console.log('Rose Firebase Auth service listening at http://localhost:%s', port);
+    console.log('Rose-Hulman Authentication service started on port 8080');
 });
 

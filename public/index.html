@@ -4,21 +4,20 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rose Firebase Auth Registration</title>
+    <title>Rose Authentication API Registration</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
   </head>
   <body>
     <style>
-      /* Inline styles because I'm too lazy to put them in seperate files & route that w/ express. */
       textarea {
         resize: none;
       }
     </style>
     <div class="jumbotron">
       <div class="container">
-        <h1>Rose-Hulman Firebase Auth</h1>
-        <p>Have you ever wanted to be able to restrict your <a href="https://www.firebase.com">Firebase</a> powered apps to just Rose-Hulman's campus? Well now you can!</p>
+        <h1>Rose-Hulman Authentication API</h1>
+        <p>Have you ever wanted to be able to restrict your apps and websites to just Rose-Hulman's campus? Well now you can!</p>
         <p><a class="btn btn-primary btn-lg" href="https://github.com/rockwotj/rosefire/" role="button">Learn more</a></p>
       </div>
     </div>
@@ -30,20 +29,22 @@
           </a>
         </div>
         <div class="media-body">
-          <h4 class="media-heading">Firebase Authentication with Rose-Hulman</h4>
+          <h4 class="media-heading">How to add Rose-Hulman Authentication to your app</h4>
           <p>
             In order to use this service, you first need to register your app
             (you can do this programmatically using the <code>/api/register/</code> endpoint).
             Do this by providing your Rose-Hulman username and password 
-            (assuring that you're actually a Rose-Hulman student) along with your Firebase secret. 
-            Your secret can be found under the Secrets tab in your Firebase app's dashboard. 
+            (assuring that you're actually a Rose-Hulman student) along with your secret. 
+            If you're using Firebase, your secret can be found under the Secrets tab in 
+            your Firebase app's dashboard. Otherwise, make up a 
+            <a href="https://www.random.org/strings/?num=1&len=20&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new">secure secret</a> to use.
           </p>
           <p>
-            Once you've registered, you'll recieve a token that you <b>must</b> include when making requests
-            to the <code>/api/auth/</code> endpoint. However, assuming that you make the correct request and 
-            the credentials are valid, the <code>/api/auth/</code> endpoint will return a token that you can
-            use as a <a href="https://www.firebase.com/docs/web/guide/login/custom.html#section-authenticating-clients">Firebase custom auth</a>
-            token.
+            Once you've registered, you'll recieve a token that you <b>must</b> include when making requests to the <code>/api/auth/</code> 
+            endpoint. However, assuming that you make the correct request and the credentials are valid, the <code>/api/auth/</code> 
+            endpoint will return a <a href="https://jwt.io/introduction/">JSON Web Token</a> that you can use as your authentication mechanism for your app 
+            or a <a href="https://www.firebase.com/docs/web/guide/login/custom.html#section-authenticating-clients">Firebase custom auth</a> 
+            token if you're using Firebase.
           </p>
         </div>
       </div>
@@ -55,7 +56,7 @@
 
         <!-- Appended Input-->
         <div class="form-group">
-          <label class="col-md-4 control-label" for="email">Rose Username</label>
+          <label class="col-md-4 control-label" for="email">Rose-Hulman Username</label>
           <div class="col-md-6">
             <div class="input-group">
               <input id="email" name="email" class="form-control" placeholder="username" type="text" required="">
@@ -66,19 +67,17 @@
         </div>
         <!-- Password input-->
         <div class="form-group">
-          <label class="col-md-4 control-label" for="password">Rose Password</label>
+          <label class="col-md-4 control-label" for="password">Rose-Hulman Password</label>
           <div class="col-md-6">
             <input id="password" name="password" type="password" placeholder="" class="form-control input-md" required="">
-            
           </div>
         </div>
 
         <!-- Text input-->
         <div class="form-group">
-          <label class="col-md-4 control-label" for="secret">Firebase Secret</label>  
+          <label class="col-md-4 control-label" for="secret">Secret</label>  
           <div class="col-md-8">
           <input id="secret" name="secret" type="text" placeholder="Paste your secret here!" class="form-control input-md" required="">
-            
           </div>
         </div>
 
@@ -96,61 +95,6 @@
       <div class="alert alert-danger" role="alert" style="display:none;">...</div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>
-      registerUser = function() {
-        var payload = {
-          email: $('#email').val() + "@rose-hulman.edu",
-          password: $('#password').val(),
-          secret: $('#secret').val()
-        };
-        var endpoint = '/api/register/';
-        var successAlert = $('.alert.alert-success');
-        var errorAlert = $('.alert.alert-danger');
-        successAlert.hide();
-        errorAlert.hide();
-        $.ajax({
-            type: "POST",
-            url: endpoint,
-            data: payload,
-            dataType: 'json'
-        })
-        .done(function(data) {
-          var msg = "<p>Token:</p><p><textarea class='form-control copyable' rows='3'>" + data.registryToken + "</textarea></p><p> <button class='btn btn-default copier'>Copy</button> Created for " + data.username + " at " + new Date(data.timestamp * 1000) + ".</p><p>Please save this and use this when your app makes requests to the /api/auth/ endpoint.</p>";
-          successAlert.html(msg);
-          successAlert.show();
-          $('.copier').click(function(event) {
-            var copyTextarea = $('.copyable');
-            copyTextarea.select();
-            $('.copier').removeClass("btn-default");
-            try {
-              var successful = document.execCommand('copy');
-              var msg = successful ? 'successful' : 'unsuccessful';
-              console.log('Copying text command was ' + msg);
-              if (successful) {
-                $('.copier').html("Copied!");
-                $('.copier').addClass("btn-success");
-              }
-            } catch (err) {
-              console.log('Oops, unable to copy');
-              $('.copier').html("Failed!");
-              $('.copier').addClass("btn-danger");
-              $('.copier').prop("disabled",true);
-            }
-          });
-        })
-        .fail(function(jq) {
-          console.log(jq)
-          var error = jq.responseJSON.error;
-          errorAlert.html("<p><b>Error:</b> " + error + "</p>");
-          errorAlert.show();
-        })
-        .always(function() {
-          $('#password').val('');
-          $('#secret').val('');
-          $(document).scrollTop($(document).height());
-        });
-        return false;
-      };
-    </script>
+    <script src="/main.js"></script>
   </body>
 </html>

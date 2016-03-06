@@ -39,7 +39,7 @@ var extractEmailUsername = (email) => {
 
 var app = express();
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({extended: false}));

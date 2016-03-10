@@ -83,6 +83,7 @@ app.use('/api/auth', (req, res, next) => {
 app.use('/api/auth', (req, res, next) => {
   if (req.body.options && req.body.options.group) {
     var email = req.body.email;
+    var password = req.body.password;
     var creds = {bindDN: email, bindCredentials: password};
     rose.getGroupMembershipForUser(creds, username, (err, groups) => {
       if (err || !groups) {
@@ -177,8 +178,9 @@ app.post('/api/register', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.toString());
-  res.status(err.status).json({error: err.toString(), status: err.status});
+  msg = err.toString()
+  console.error(msg);
+  res.status(err.status).json({error: msg, status: err.status});
 });
 
 var port = 8080;

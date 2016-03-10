@@ -83,6 +83,7 @@ app.use('/api/auth', (req, res, next) => {
 app.use('/api/auth', (req, res, next) => {
   if (req.body.options && req.body.options.group) {
     var email = req.body.email;
+    var username = req.body.username;
     var password = req.body.password;
     var creds = {bindDN: email, bindCredentials: password};
     rose.getGroupMembershipForUser(creds, username, (err, groups) => {

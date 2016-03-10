@@ -178,7 +178,7 @@ app.post('/api/register', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  msg = err.toString()
+  var msg = err.toString()
   console.error(msg);
   res.status(err.status).json({error: msg, status: err.status});
 });

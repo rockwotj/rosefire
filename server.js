@@ -91,6 +91,7 @@ app.use('/api/auth', (req, res, next) => {
         console.log(email + " failed authentication!");
         res.status(400).json({error: "Invalid Rose-Hulman credentials", status: 400});
       } else {
+        console.log(groups);
         async.parallel({
           isStudent: (callback) => {
             async.any(groups, (item, cb) => {
@@ -102,12 +103,19 @@ app.use('/api/auth', (req, res, next) => {
             async.any(groups, (item, cb) => {
               cb(item.cn === 'Instructor');
             }, callback.bind(undefined, null));
+          },
+          isSysAdmin: (callback) => {
+            async.any(groups, (item, cb) => {
+              cb(item.cn === 'CSSE-MA Departmental Admins');
+            }, callback.bind(undefined, null));
           }
         }, (err, results) => {
           if (err) {
             res.status(500).json({error: err.toString(), status: 500});
           } else {
-            if (results.isInstructor) {
+            if (results.isSysAdmin) {
+              req.body.group = 'SYSADMIN'
+            } else if (results.isInstructor) {
               req.body.group = 'INSTRUCTOR';
             } else if (results.isStudent) {
               req.body.group = 'STUDENT';

@@ -14,7 +14,8 @@ public class AuthData {
     public enum Group {
         STUDENT,
         INSTRUCTOR,
-        OTHER
+        OTHER,
+        SYSADMIN
     }
 
     private final String username;
@@ -37,6 +38,8 @@ public class AuthData {
                 this.group = Group.STUDENT;
             } else if (group.equalsIgnoreCase("INSTRUCTOR")) {
                 this.group = Group.INSTRUCTOR;
+            } else if (group.equalsIgnoreCase("SYSADMIN")) {
+                this.group = Group.SYSADMIN;
             } else {
                 this.group = Group.OTHER;
             }

@@ -5,7 +5,7 @@
 [![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.4-orange.svg)](#javascript)
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
-[![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
+[![Java](https://img.shields.io/badge/java-v1.2.0-green.svg)](#java)
 [![Node](https://img.shields.io/badge/node-howto-darkgreen.svg)](#node)
 
 [![JWT](http://jwt.io/assets/badge-compatible.svg)](https://jwt.io)
@@ -325,7 +325,7 @@ To get this working on GAE you need to follow [these instructions](https://cloud
 
 ### Java
 
-[![Java](https://img.shields.io/badge/java-v1.1.0-green.svg)](#java)
+[![Java](https://img.shields.io/badge/java-v1.2.0-green.svg)](#java)
 
 **Step 1**: Add jitpack as a maven repo to either your pom.xml or your build.gradle
 
@@ -350,13 +350,13 @@ repositories {
 <dependency>
 	<groupId>com.github.rockwotj</groupId>
 	<artifactId>rosefire</artifactId>
-	<version>java-v1.1.0</version>
+	<version>java-v1.2.0</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:java-v1.1.0'
+  compile 'com.github.rockwotj:rosefire:java-v1.2.0'
 }
 ```
 

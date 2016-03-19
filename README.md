@@ -178,7 +178,7 @@ Then run `pod install`
 
 #### Swift Projects
 
-**Step 3:** Authenticate a Rose-Hulman User with Firebase:
+**Step 2:** Authenticate a Rose-Hulman User with Firebase:
 
 ```swift
 let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")

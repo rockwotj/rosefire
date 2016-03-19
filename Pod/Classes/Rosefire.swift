@@ -58,8 +58,8 @@ public class func getToken(registryToken: String!, email: String!, password: Str
                 if let token = json["token"] as? String {
                     closure(nil, token)
                 } else {
-                    let message = json["message"] as! String
-                    let code = json["code"] as! Int
+                    let message = json["error"] as! String
+                    let code = json["status"] as! Int
                     let userInfo: [NSObject : AnyObject] = [
                         NSLocalizedDescriptionKey :  NSLocalizedString("Invalid Login", value: message, comment: ""),
                         NSLocalizedFailureReasonErrorKey : NSLocalizedString("Invalid Login", value: message, comment: "")

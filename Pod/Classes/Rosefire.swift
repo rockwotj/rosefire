@@ -6,15 +6,17 @@ import Alamofire
 import Firebase
 
 @objc
-class RosefireTokenOptions : NSObject {
+public class RosefireTokenOptions : NSObject {
     var admin : Bool!
     var expires : NSNumber!
     var notBefore : NSNumber!
     var group : Bool!
 }
 
-
-func getRosefireToken(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, String!) -> ())!, withOptions options: RosefireTokenOptions?) {
+@objc
+public class Rosefire : NSObject {
+    
+public class func getToken(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, String!) -> ())!, withOptions options: RosefireTokenOptions?) {
     var payload : [String:AnyObject] = [
         "email": email,
         "password": password,
@@ -67,14 +69,16 @@ func getRosefireToken(registryToken: String!, email: String!, password: String!,
     }
 }
 
+}
+
 extension Firebase {
     
-    func authWithRoseHulman(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, FAuthData!) -> ())!) {
+    public func authWithRoseHulman(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, FAuthData!) -> ())!) {
         self.authWithRoseHulman(registryToken, email: email, password: password, withCompletionBlock: closure, withOptions: nil)
     }
     
-    func authWithRoseHulman(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, FAuthData!) -> ())!, withOptions options: RosefireTokenOptions?) {
-        getRosefireToken(registryToken, email: email, password: password, withCompletionBlock: { (err, token) -> () in
+    public func authWithRoseHulman(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, FAuthData!) -> ())!, withOptions options: RosefireTokenOptions?) {
+        Rosefire.getToken(registryToken, email: email, password: password, withCompletionBlock: { (err, token) -> () in
             if err == nil {
                 self.authWithCustomToken(token, withCompletionBlock: closure)
             } else {

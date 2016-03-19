@@ -277,7 +277,7 @@ If you use these libraries, you can either do everything server-side, or you get
 
 To learn more about how Rosefire works checkout [this link](https://jwt.io/introduction/).
 
-NOTE: You can currently get tokens on all platforms except ios. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase.
+NOTE: You can currently get tokens on all client platforms. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase. On iOS, you'll find the `Rosefire.getToken` method to be useful.
 
 ### A Note About Security
 

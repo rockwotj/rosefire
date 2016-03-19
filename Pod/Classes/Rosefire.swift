@@ -55,7 +55,18 @@ public class func getToken(registryToken: String!, email: String!, password: Str
             closure(err, nil)
         } else {
             if let json = response.result.value as? NSDictionary {
-                closure(nil, json["token"] as! String)
+                if let token = json["token"] as? String {
+                    closure(nil, token)
+                } else {
+                    let message = json["message"] as! String
+                    let code = json["code"] as! Int
+                    let userInfo: [NSObject : AnyObject] = [
+                        NSLocalizedDescriptionKey :  NSLocalizedString("Invalid Login", value: message, comment: ""),
+                        NSLocalizedFailureReasonErrorKey : NSLocalizedString("Invalid Login", value: message, comment: "")
+                    ]
+                    let err = NSError(domain: "rose-hulman.edu", code: code, userInfo: userInfo)
+                    closure(err, nil)
+                }
             } else {
                 let message = "Could not reach server!"
                 let userInfo: [NSObject : AnyObject] = [

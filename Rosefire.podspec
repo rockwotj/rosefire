@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = "Rosefire"
   s.version          = "0.1.0"
-  s.summary          = "A short description of Rosefire."
+  s.summary          = "Rosefire iOS library"
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -19,11 +19,11 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/Rosefire"
+  s.homepage         = "https://github.com/rockwotj/rosefire"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Tyler Rockwood" => "rockwotj@gmail.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/Rosefire.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/rockwotj/rosefire.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '8.0'
@@ -36,5 +36,6 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'Alamofire', '~> 3.0'
+  s.dependency 'Firebase', '>= 2.5.0'
 end

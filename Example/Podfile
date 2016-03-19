@@ -4,6 +4,6 @@ use_frameworks!
 
 target 'Rosefire_Tests', :exclusive => true do
   pod 'Rosefire', :path => '../'
-
-  
+  pod 'Firebase', '>= 2.5.0'
+  pod 'Alamofire'
 end

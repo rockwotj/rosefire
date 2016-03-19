@@ -1,0 +1,6 @@
+framework module Rosefire {
+  umbrella header "Rosefire-umbrella.h"
+
+  export *
+  module * { export * }
+}

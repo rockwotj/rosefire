@@ -1,0 +1,6 @@
+framework module Pods_Rosefire_Tests {
+  umbrella header "Pods-Rosefire_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Rosefire",
+  "version": "0.1.0",
+  "summary": "Rosefire iOS library",
+  "description": "",
+  "homepage": "https://github.com/rockwotj/rosefire",
+  "license": "MIT",
+  "authors": {
+    "Tyler Rockwood": "rockwotj@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/rockwotj/rosefire.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "requires_arc": true,
+  "source_files": "Pod/Classes/**/*",
+  "resource_bundles": {
+    "Rosefire": [
+      "Pod/Assets/*.png"
+    ]
+  },
+  "dependencies": {
+    "Alamofire": [
+      "~> 3.0"
+    ],
+    "Firebase": [
+      ">= 2.5.0"
+    ]
+  }
+}

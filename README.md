@@ -2,7 +2,7 @@
 
 ![Server](https://img.shields.io/badge/server-v1.1.1-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
-[![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)](#ios)
+[![iOS](https://img.shields.io/badge/swift-v1.0.2-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.4-orange.svg)](#javascript)
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 [![Java](https://img.shields.io/badge/java-v1.2.0-green.svg)](#java)
@@ -161,24 +161,22 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 ### iOS
 
-![iOS](https://img.shields.io/badge/ios-v1.1.0-blue.svg)
+![iOS](https://img.shields.io/badge/swift-v1.0.2-blue.svg)
 
 **Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
 ```ruby
-pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'ios-v1.1.0'
+platform :ios, '8.1'
+use_frameworks!
+
+# ... Other pods ...
+
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'swift-v1.0.2'
 ```
 
 Then run `pod install`
 
 #### Swift Projects
-
-**Step 2:** Import Firebase and Rosefire in your bridging header:
-
-```objc
-#import <Firebase/Firebase.h>
-#import <Rosefire/Rosefire.h>
-```
 
 **Step 3:** Authenticate a Rose-Hulman User with Firebase:
 

@@ -9,19 +9,16 @@ module.exports = ({url}) ->
       groups: [
         cn: 'Stu2012'
       ]
-
     mouck:
       password: 'pass'
       groups: [
         cn: 'CSSE-MA Departmental Admins'
       ]
-
     fisherds:
       password: 'pass'
       groups: [
         cn: 'Instructor'
       ]
-
   # Exported functions
   authenticate: (email, password, callback) ->
     username = extractEmailUsername email

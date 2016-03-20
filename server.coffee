@@ -1,15 +1,14 @@
 'use strict'
 
 ActiveDirectory = require 'activedirectory'
-express = require 'express'
 BodyParser = require 'body-parser'
+express = require 'express'
 corser = require 'corser'
 fs = require 'fs'
 encrypter = require 'simple-encryptor'
 
-{ extractEmailUsername } = require './utils'
-apiV1 = require './api/v1'
-apiV2 = require './api/v2'
+{extractEmailUsername} = require './utils'
+api = require './api'
 webviewPages = require './webview/pages'
 
 ldapConfig =
@@ -68,9 +67,9 @@ app.use (req, res, next) ->
         next()
 
 # Original API
-apiV1 {app, rose, secrets, engine}
+api.v1 {app, rose, secrets, engine}
 # New WebView APIs
-apiV2 {app, rose, secrets, engine}
+api.v2 {app, rose, secrets, engine}
 
 # Handle errors
 app.use (err, req, res, next) ->

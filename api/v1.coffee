@@ -61,15 +61,12 @@ module.exports = ({app, rose, secrets, engine}) ->
                 error: err.toString()
                 status: 500
             else
-              if results.isSysAdmin
-                req.body.group = 'SYSADMIN'
-              else if results.isInstructor
-                req.body.group = 'INSTRUCTOR'
-              else if results.isStudent
-                req.body.group = 'STUDENT'
-              else
-                req.body.group = 'OTHER'
-              console.log 'Found group to be ' + req.body.group + ' for user ' + username
+              req.body.group = switch
+                when results.isSysAdmin then 'SYSADMIN'
+                when results.isInstructor then 'INSTRUCTOR'
+                when results.isStudent then 'STUDENT'
+                else 'OTHER'
+              console.log "Found group to be #{req.body.group} for user #{username}"
               next()
     else
       req.body.group = false
@@ -96,7 +93,7 @@ module.exports = ({app, rose, secrets, engine}) ->
       tokenData.group = req.body.group
     delete tokenOptions.group
     token = tokenGenerator.createToken(tokenData, tokenOptions)
-    console.log 'Generated token authenticating ' + username
+    console.log "Generated token authenticating #{username}"
     res.json
       token: token
       timestamp: tokenData.timestamp
@@ -121,7 +118,7 @@ module.exports = ({app, rose, secrets, engine}) ->
       secret: secret
       timestamp: Math.floor(Date.now() / 1000)
     token = engine.encrypt(tokenData)
-    console.log 'Generated registryToken for ' + username
+    console.log "Generated registryToken for #{username}"
     res.json
       registryToken: token
       timestamp: tokenData.timestamp

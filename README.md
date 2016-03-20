@@ -1,6 +1,6 @@
 # Rose-Hulman Authentication API
 
-![Server](https://img.shields.io/badge/server-v1.1.1-red.svg)
+![Server](https://img.shields.io/badge/server-v2.0.0-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/swift-v1.0.2-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v1.0.4-orange.svg)](#javascript)
@@ -14,6 +14,8 @@
 
 
 This is a simple service that authenticates Rose-Hulman students via LDAP and returns a [JSON Web Token](https://jwt.io/introduction/).
+
+**WARNING! This is documentation is for version 1. Version 2 is on the way :smile:**
 
 ## TL;DR
 

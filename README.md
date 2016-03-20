@@ -8,6 +8,8 @@
 [![Java](https://img.shields.io/badge/java-v1.2.0-green.svg)](#java)
 [![Node](https://img.shields.io/badge/node-howto-darkgreen.svg)](#node)
 
+[![Build Status](https://travis-ci.org/rockwotj/rosefire.svg?branch=master)](https://travis-ci.org/rockwotj/rosefire)
+
 [![JWT](http://jwt.io/assets/badge-compatible.svg)](https://jwt.io)
 
 

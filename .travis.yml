@@ -3,5 +3,4 @@ node_js:
 - '5'
 - stable
 before_install:
-- openssl aes-256-cbc -K $encrypted_fce88d7a1c25_key -iv $encrypted_fce88d7a1c25_iv
-  -in secrets.json.enc -out secrets.json -d
+- cp secrets.sample.json secrets.json

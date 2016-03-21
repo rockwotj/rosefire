@@ -94,9 +94,41 @@ describe 'Authenticate', ->
         data.uid.should.equal 'rockwotj'
         data.should.have.property 'provider'
         data.provider.should.equal 'rose-hulman'
-        decoded.should.have.property 'admin'
-        decoded.admin.should.equal true
         done()
+
+  it 'should reject invalid credentials', (done) =>
+    data =
+      email: 'rockwotj@rose-hulman.edu'
+      password: 'pas'
+      registryToken: @registryToken
+
+    request app
+      .post '/api/auth'
+      .send data
+      .expect 401
+      .expect 'Content-Type', /json/
+      .end (err, res) ->
+        res.body.should.have.property 'error'
+        res.body.should.have.property 'status'
+        done()
+
+  it 'should reject invalid registryToken', (done) ->
+    data =
+      email: 'rockwotj@rose-hulman.edu'
+      password: 'pass'
+      registryToken: 'foobar'
+
+    request app
+      .post '/api/auth'
+      .send data
+      .expect 400
+      .expect 'Content-Type', /json/
+      .end (err, res) ->
+        res.body.should.have.property 'error'
+        res.body.should.have.property 'status'
+        done()
+
+
 
   assertTokenHasGroup = (username, group) =>
     (done) =>

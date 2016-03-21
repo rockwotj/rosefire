@@ -40,7 +40,7 @@ JSON Web Tokens recieved from this service will have the following fields inside
 {
   "uid": (String) the Rose username of the user,
   "provider": (String) 'rose-hulman',
-  "group": (String, Optional) either 'STUDENT', 'INSTRUCTOR', or 'OTHER'
+  "group": (String, Optional) either 'STUDENT', 'INSTRUCTOR', 'SYSADMIN' or 'OTHER'
 }
 ```
 
@@ -84,8 +84,7 @@ A post request to `/api/auth/` requires the following parameters in the JSON bod
   "options": {
     "group": false,
     "expires": 12340192830,
-    "notBefore": 1234234134,
-    "admin": false
+    "notBefore": 1234234134
   }
 }
 ```
@@ -94,8 +93,7 @@ These are the options for the endpoint, more information can be found [here](htt
 
 * <b>expires</b>: (Integer) A timestamp of when the token is invalid.
 * <b>notBefore</b>: (Integer) A timestamp of when the token should start being valid.
-* <b>admin</b>: (Boolean) If true, then all security rules are disabled for this user. This can only be true for the user who the token is registred with.
-* <b>group</b>: (Boolean) If true, then 'STUDENT' or 'INSTRUCTOR' group will be looked up using LDAP. Please note that is causes the request to be about four times longer with this set to true.
+* <b>group</b>: (Boolean) If true, then 'STUDENT', 'SYSADMIN' or 'INSTRUCTOR' group will be looked up using LDAP. Please note that is causes the request to be about four times longer with this set to true.
 
 This endpoint returns an object that looks like this
 
@@ -130,7 +128,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ```gradle
 android {
-  ... (other stuff)
+  // ... (other stuff)
   
   repositories {
     maven { url "https://jitpack.io" }
@@ -281,7 +279,7 @@ If you use these libraries, you can either do everything server-side, or you get
 
 To learn more about how Rosefire works checkout [this link](https://jwt.io/introduction/).
 
-NOTE: You can currently get tokens on all platforms except ios. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase.
+NOTE: You can currently get tokens on all platforms. You'll need to use the [java libary](#java) on Android to get tokens without going through Firebase and you'll find the `Rosefire.getToken()` function useful on iOS.
 
 ### A Note About Security
 
@@ -371,9 +369,6 @@ public class MainServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
                throws IOException, ServletException {
 		String token = request.getParameter("rosefire_token");
-		// OR use the below code on your server if you have a login form and you're sending the email and 
-		// password in a POST request.
-		// token = new RosefireAuth(REGISTRY_TOKEN).getToken("rockwotj@rose-hulman.edu", "Pa$sw0rd");
 
 		// Now verify the token you got
 		RosefireTokenVerifier verifier = new RosefireTokenVerifier(SECRET);

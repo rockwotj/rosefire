@@ -7,7 +7,7 @@ corser = require 'corser'
 fs = require 'fs'
 encrypter = require 'simple-encryptor'
 
-{extractEmailUsername} = require './utils'
+{extractEmailUsername, sendError} = require './utils'
 api = require './api'
 webviewPages = require './webview/pages'
 
@@ -46,22 +46,23 @@ app.use BodyParser.json()
 app.use BodyParser.urlencoded(extended: false)
 app.use corser.create()
 
+app.use (req, res, next) ->
+  # Register helper functions
+  res.jsonError = sendError
+  next()
+
 # You must provide valid Rose-Hulman Credentials
 # to use this service.
 app.use (req, res, next) ->
   email = req.body.email
   password = req.body.password
   if !email or !password
-    res.status(400).json
-      error: 'Missing email or password'
-      status: 400
+    res.jsonError 400, 'Missing email or password'
   else
     rose.authenticate email, password, (err, auth) ->
       if err or !auth
         console.log email + ' failed authentication!'
-        res.status(401).json
-          error: 'Invalid Rose-Hulman credentials'
-          status: 401
+        res.jsonError 401, 'Invalid Rose-Hulman credentials'
       else
         req.body.username = extractEmailUsername email
         next()
@@ -76,9 +77,7 @@ app.use (err, req, res, next) ->
   msg = err?.toString() or 'Internal Server Error'
   status = err?.status or 500
   console.error msg
-  res.status(status).json
-    error: msg
-    status: status
+  res.jsonError status, msg
 
 port = 8080
 ip_address = '127.0.0.1'

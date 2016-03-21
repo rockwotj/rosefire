@@ -1,6 +1,10 @@
 
 .navbar.navbar-primary {
   background-color: #800000;
+  border-radius: 0px;
+}
+.navbar.navbar-primary .navbar-brand {
+  height: 60px;
 }
 .navbar.navbar-primary img {
   height: 100%;

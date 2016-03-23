@@ -40,9 +40,10 @@ module.exports = ({app, rose, secrets, engine}) ->
 
   app.post '/api/auth', (req, res) ->
     {username, secret, group, options} = req.body
-    delete options.debug
-    delete options.admin
-    delete options.group
+    if options
+      delete options.debug
+      delete options.admin
+      delete options.group
     tokenGenerator = new FirebaseTokenGenerator secret
     tokenData =
       uid: username

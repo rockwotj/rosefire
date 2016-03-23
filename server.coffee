@@ -76,7 +76,7 @@ api.v2 {app, rose, secrets, engine}
 app.use (err, req, res, next) ->
   msg = err?.toString() or 'Internal Server Error'
   status = err?.status or 500
-  console.error msg
+  console.error err.stack
   res.jsonError status, msg
 
 port = 8080

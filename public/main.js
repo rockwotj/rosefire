@@ -4,7 +4,7 @@ registerUser = function() {
     password: $('#password').val(),
     secret: $('#secret').val()
   };
-  var endpoint = '/api/register/';
+  var endpoint = '/v2/api/register/';
   var successAlert = $('.alert.alert-success');
   var errorAlert = $('.alert.alert-danger');
   successAlert.hide();

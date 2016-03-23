@@ -80,7 +80,7 @@ app.use (err, req, res, next) ->
   res.jsonError status, msg
 
 port = 8080
-ip_address = '127.0.0.1'
+ip_address = '0.0.0.0'
 module.exports = app.listen port, ip_address, ->
   console.log 'Rose-Hulman Authentication service started on port 8080'
 

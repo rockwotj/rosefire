@@ -1,5 +1,5 @@
 FirebaseTokenGenerator = require 'firebase-token-generator'
-{verifyOptions, extractGroup} = require '../utils'
+{extractGroup} = require '../utils'
 
 module.exports = ({app, rose, secrets, engine}) ->
 
@@ -40,18 +40,20 @@ module.exports = ({app, rose, secrets, engine}) ->
 
   app.post '/api/auth', (req, res) ->
     {username, secret, group, options} = req.body
-    tokenOptions = verifyOptions options
+    delete options.debug
+    delete options.admin
+    delete options.group
     tokenGenerator = new FirebaseTokenGenerator secret
     tokenData =
       uid: username
       provider: 'rose-hulman'
     tokenData.group = group if group
-    token = tokenGenerator.createToken tokenData, tokenOptions
+    token = tokenGenerator.createToken tokenData, options
     console.log "Generated token authenticating #{username}"
     res.json
       token: token
-      timestamp: tokenData.timestamp
-      username: tokenData.uid
+      timestamp: Math.floor(Date.now() / 1e3)
+      username: username
 
   app.use '/api/register', (req, res, next) ->
     secret = req.body.secret

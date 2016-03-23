@@ -1,4 +1,5 @@
 async = require 'async'
+{isBoolean, isFinite} = require 'underscore'
 
 module.exports =
   extractEmailUsername: (email) ->
@@ -9,13 +10,25 @@ module.exports =
     @status(code).json
       error: msg
       status: code
-  verifyOptions: (options) ->
-    return options if !options
-    delete options.debug
-    delete options.admin
-    delete options.group
+
+  unixTime: () ->
+    Math.floor(Date.now() / 1e3)
+
+  extractOptions: (options) ->
+    return null unless options
+    {g, e} = options
+    {group: g, expires: e}
+
+  createOptions: (options) ->
+    return null unless options
+    {group, expires} = options
+    options = {}
+    if isBoolean group
+      options.g = group
+    if isFinite expires
+      options.e = expires
     options
-    # TODO: verify only correct options
+
   extractGroup: (ldapGroup, callback) ->
     studentChecker = (item) ->
       item.cn.startsWith('Stu') or item.cn == 'all-sg'

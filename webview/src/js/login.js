@@ -10,8 +10,6 @@ var loginResult = function() {
   let submitButton = document.getElementById('submit');
   if (this.status === 200) {
       let response = JSON.parse(this.responseText);
-      response.username = "rockwotj";
-
       submitButton.classList.remove('btn-primary');
       submitButton.classList.add('btn-success');
       submitButton.innerHTML = `${response.username} logged in`;
@@ -33,15 +31,18 @@ var handleLogin = function(e) {
   document.getElementById('submit').disabled = true;
   let username = document.getElementById('username').value;
   let password = document.getElementById('password').value;
-  console.log(`${username} is trying to login`);
+  console.log(`${username} to login`);
   let request = new XMLHttpRequest();
   request.onload = loginResult;
-  request.open('POST', 'https://httpbin.org/post', true);
+  request.open('POST', '/v2/api/auth', true);
   request.setRequestHeader("Content-Type", "application/json");
-  request.send(JSON.stringify({
-    username: username,
-    password: password
-  }));
+  let data = JSON.stringify({
+    email: `${username}@rose-hulman.edu`,
+    password: password,
+    registryToken: registryToken
+  });
+  console.log(data);
+  request.send(data);
   // Return false to prevent page submission
   return false;
 };

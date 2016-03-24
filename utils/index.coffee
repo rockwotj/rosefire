@@ -5,8 +5,10 @@ module.exports =
   extractEmailUsername: (email) ->
     [username, domain] = email.split '@'
     username.toLowerCase()
+
   # Function extention for response
   sendError: (code, msg) ->
+    console.error msg
     @status(code).json
       error: msg
       status: code

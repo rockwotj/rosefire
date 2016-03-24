@@ -1,5 +1,5 @@
 FirebaseTokenGenerator = require 'firebase-token-generator'
-{createOptions, extractOptions, unixTime} = require '../utils'
+{createOptions, extractOptions, unixTime, extractGroup} = require '../utils'
 
 module.exports = ({app, rose, secrets, engine}) ->
 
@@ -40,7 +40,7 @@ module.exports = ({app, rose, secrets, engine}) ->
 
   app.use '/v2/api/auth', (req, res, next) ->
     if req.body.options?.expires
-      req.body.expires = unixTime() + expires
+      req.body.expires = unixTime() + req.body.options.expires
     else
       req.body.expires = false
     next()
@@ -54,7 +54,7 @@ module.exports = ({app, rose, secrets, engine}) ->
     tokenData.group = group if group
     tokenOptions = {}
     tokenOptions.expires = expires if expires
-    token = tokenGenerator.createToken tokenData, expires
+    token = tokenGenerator.createToken tokenData, tokenOptions
     res.json {username, token}
 
   app.use '/v2/api/register', (req, res, next) ->

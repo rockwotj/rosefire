@@ -17,9 +17,9 @@ module.exports = ({app}) ->
       stream = mu.compileAndRender __dirname + '/src/login.html.mustache', context
       stream.pipe res
 
-getPlatformFunction = ({platform}) ->
+getPlatformFunction = ({platform, referrer}) ->
   switch platform
     when 'android' then 'Android.finish'
-    when 'ios' then ''
-    when 'web' then ''
+    when 'ios' then 'webkit.messageHandlers.rosefire.postMessage'
+    when 'web' then "function(t){opener.postMessage(t,'#{referrer}');}"
     else null

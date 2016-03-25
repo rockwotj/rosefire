@@ -1,3 +1,5 @@
+/* Rosefire registration */
+
 registerUser = function() {
   var payload = {
     email: $('#email').val() + "@rose-hulman.edu",

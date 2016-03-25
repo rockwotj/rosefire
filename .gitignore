@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 secrets.json
+*.js
+!public/**/*.js
+!src/**/*.js

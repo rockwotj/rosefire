@@ -43,7 +43,6 @@ var handleLogin = function(e) {
   });
   console.log(data);
   request.send(data);
-  // Return false to prevent page submission
   return false;
 };
 

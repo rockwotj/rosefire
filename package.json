@@ -36,7 +36,8 @@
   },
   "scripts": {
     "start": "NODE_ENV=DEVELOPMENT coffee server.coffee",
-    "test": "NODE_ENV=DEVELOPMENT mocha --require should --compilers coffee:coffee-script/register --colors"
+    "test": "NODE_ENV=DEVELOPMENT mocha --require should --compilers coffee:coffee-script/register --colors",
+    "install": "coffee -c ."
   },
   "repository": {
     "type": "git",

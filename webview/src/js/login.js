@@ -13,7 +13,7 @@ var loginResult = function() {
       submitButton.classList.remove('btn-primary');
       submitButton.classList.add('btn-success');
       submitButton.innerHTML = `${response.username} logged in`;
-      window.setTimeout(loggedIntoRosefire(this.responseText), 1000);
+      window.setTimeout(loggedIntoRosefire(response.token), 1000);
   } else {
     console.log(this.status);
     try {

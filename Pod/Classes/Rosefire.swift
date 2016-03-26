@@ -11,7 +11,7 @@ public class Rosefire : NSObject {
     private static var rosefire : Rosefire?
     
     public class func sharedDelegate() -> Rosefire! {
-        if rosefire != nil {
+        if rosefire == nil {
             rosefire = Rosefire()
         }
         return rosefire!

@@ -3,7 +3,7 @@ import UIKit
 import WebKit
 import Firebase
 
-typealias RosefireCallback = ((NSError!, String!) -> ())!
+public typealias RosefireCallback = ((NSError!, String!) -> ())!
 
 @objc
 public class Rosefire : NSObject {
@@ -17,13 +17,13 @@ public class Rosefire : NSObject {
         return rosefire!
     }
     
-    var uiDelegate : UIViewController?
+    public var uiDelegate : UIViewController?
     
-    override init() {
+    private override init() {
         super.init()
     }
     
-    func signIn(registryToken : String!, withClosure closure: RosefireCallback) {
+    public func signIn(registryToken : String!, withClosure closure: RosefireCallback) {
         if uiDelegate == nil {
             let err = NSError(domain: "Failed to set UI Delegate for Rosefire", code: 500, userInfo: nil)
             closure(err, nil)

@@ -84,12 +84,8 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "Pods-Rosefire_Tests/Alamofire.framework"
-  install_framework "Pods-Rosefire_Tests/Firebase.framework"
   install_framework "Pods-Rosefire_Tests/Rosefire.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "Pods-Rosefire_Tests/Alamofire.framework"
-  install_framework "Pods-Rosefire_Tests/Firebase.framework"
   install_framework "Pods-Rosefire_Tests/Rosefire.framework"
 fi

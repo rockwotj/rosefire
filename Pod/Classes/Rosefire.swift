@@ -1,100 +1,81 @@
 
-
-
-
-import Alamofire
+import UIKit
+import WebKit
 import Firebase
 
-@objc
-public class RosefireTokenOptions : NSObject {
-    var admin : Bool!
-    var expires : NSNumber!
-    var notBefore : NSNumber!
-    var group : Bool!
-}
+typealias RosefireCallback = ((NSError!, String!) -> ())!
 
 @objc
 public class Rosefire : NSObject {
     
-public class func getToken(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, String!) -> ())!, withOptions options: RosefireTokenOptions?) {
-    var payload : [String:AnyObject] = [
-        "email": email,
-        "password": password,
-        "registryToken": registryToken
-    ]
-    if let o = options {
-        var requestOptions : [String:AnyObject] = [:]
-        if o.admin != nil {
-            requestOptions["admin"] = o.admin
+    private static var rosefire : Rosefire?
+    
+    public class func sharedDelegate() -> Rosefire! {
+        if rosefire != nil {
+            rosefire = Rosefire()
         }
-        if o.expires != nil {
-            requestOptions["expires"] = o.expires
-        }
-        if o.notBefore != nil {
-            requestOptions["notBefore"] = o.notBefore
-        }
-        if o.group != nil {
-            requestOptions["group"] = o.group
-        }
-        payload["options"] = requestOptions
+        return rosefire!
     }
-    Alamofire.request(.POST, "https://rosefire.csse.rose-hulman.edu/api/auth", parameters: payload, encoding: .JSON).responseJSON { response in
-        if let httpError = response.result.error {
-            let statusCode = httpError.code
-            let message : String!
-            if statusCode == 401 || statusCode == 400 {
-                message = "Invalid Rose-Hulman Credentials"
-            } else {
-                message = "Login Failed!"
-            }
-            let userInfo: [NSObject : AnyObject] = [
-                NSLocalizedDescriptionKey :  NSLocalizedString("Unauthorized", value: message, comment: ""),
-                NSLocalizedFailureReasonErrorKey : NSLocalizedString("Unauthorized", value: message, comment: "")
-            ]
-            let err = NSError(domain: "rose-hulman.edu", code: statusCode, userInfo: userInfo)
+    
+    var uiDelegate : UIViewController?
+    
+    override init() {
+        super.init()
+    }
+    
+    func signIn(registryToken : String!, withClosure closure: RosefireCallback) {
+        if uiDelegate == nil {
+            let err = NSError(domain: "Failed to set UI Delegate for Rosefire", code: 500, userInfo: nil)
             closure(err, nil)
-        } else {
-            if let json = response.result.value as? NSDictionary {
-                if let token = json["token"] as? String {
-                    closure(nil, token)
-                } else {
-                    let message = json["error"] as! String
-                    let code = json["status"] as! Int
-                    let userInfo: [NSObject : AnyObject] = [
-                        NSLocalizedDescriptionKey :  NSLocalizedString("Invalid Login", value: message, comment: ""),
-                        NSLocalizedFailureReasonErrorKey : NSLocalizedString("Invalid Login", value: message, comment: "")
-                    ]
-                    let err = NSError(domain: "rose-hulman.edu", code: code, userInfo: userInfo)
-                    closure(err, nil)
-                }
-            } else {
-                let message = "Could not reach server!"
-                let userInfo: [NSObject : AnyObject] = [
-                    NSLocalizedDescriptionKey :  NSLocalizedString("Connection Error", value: message, comment: ""),
-                    NSLocalizedFailureReasonErrorKey : NSLocalizedString("Connection Error", value: message, comment: "")
-                ]
-                let err = NSError(domain: "rose-hulman.edu", code: 502, userInfo: userInfo)
-                closure(err, nil)
-            }
+            return
         }
-    }
-}
-
-}
-
-extension Firebase {
-    
-    public func authWithRoseHulman(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, FAuthData!) -> ())!) {
-        self.authWithRoseHulman(registryToken, email: email, password: password, withCompletionBlock: closure, withOptions: nil)
+        let webview = WebviewController()
+        webview.registryToken = registryToken
+        webview.callback = { (err, token) in
+            self.uiDelegate!.dismissViewControllerAnimated(true, completion: nil)
+            closure(err, token)
+        }
+        uiDelegate!.presentViewController(webview, animated: true, completion: nil)
     }
     
-    public func authWithRoseHulman(registryToken: String!, email: String!, password: String!, withCompletionBlock closure: ((NSError!, FAuthData!) -> ())!, withOptions options: RosefireTokenOptions?) {
-        Rosefire.getToken(registryToken, email: email, password: password, withCompletionBlock: { (err, token) -> () in
-            if err == nil {
-                self.authWithCustomToken(token, withCompletionBlock: closure)
-            } else {
-                closure(err, nil)
-            }
-            }, withOptions: options)
+}
+
+
+@objc
+private class WebviewController : UIViewController, WKScriptMessageHandler {
+    
+    var webview: WKWebView?
+    var registryToken: String?
+    var callback: RosefireCallback?
+    
+    private override func loadView() {
+        super.loadView()
+        let contentController = WKUserContentController()
+        contentController.addScriptMessageHandler(
+            self,
+            name: "rosefire"
+        )
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        webview = WKWebView(
+            frame: view.bounds,
+            configuration: config
+        )
+        view = webview!
+    }
+    
+    private override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let token = registryToken!.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
+        let url = NSURL(string: "https://rosefire.csse.rose-hulman.edu/webview/login?platform=ios&registryToken=\(token)")
+        let req = NSURLRequest(URL: url!)
+        webview!.loadRequest(req)
+    }
+    
+    @objc func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        if(message.name == "rosefire") {
+            print("JavaScript is sending a message \(message.body)")
         }
+    }
 }

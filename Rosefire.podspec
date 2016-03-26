@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Rosefire"
-  s.version          = "1.0.2"
+  s.version          = "2.0.0"
   s.summary          = "Rosefire iOS library"
 
 # This description is used to generate tags and improve search results.
@@ -35,7 +35,6 @@ Pod::Spec.new do |s|
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'Alamofire', '~> 3.0'
-  s.dependency 'Firebase', '>= 2.5.0'
+  s.frameworks = 'UIKit', 'WebKit'
+  # s.dependency 'Firebase', '>= 2.5.0'
 end

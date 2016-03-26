@@ -1,12 +1,10 @@
 
 var reportError = function(msg) {
-  console.error(msg);
   document.getElementById('password-input').classList.add('has-error');
   document.getElementById('error').innerHTML = msg;
 };
 
 var loginResult = function() {
-  console.log(this.status);
   let submitButton = document.getElementById('submit');
   if (this.status === 200) {
       let response = JSON.parse(this.responseText);
@@ -41,7 +39,6 @@ var handleLogin = function(e) {
     password: password,
     registryToken: registryToken
   });
-  console.log(data);
   request.send(data);
   return false;
 };

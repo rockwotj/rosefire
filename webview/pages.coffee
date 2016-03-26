@@ -20,6 +20,6 @@ module.exports = ({app}) ->
 getPlatformFunction = ({platform, referrer}) ->
   switch platform
     when 'android' then 'Android.finish'
-    when 'ios' then 'webkit.messageHandlers.rosefire.postMessage'
+    when 'ios' then 'function(t){webkit.messageHandlers.rosefire.postMessage(t);}.bind(this)'
     when 'web' then "function(t){opener.postMessage(t,'#{referrer}');}"
     else null

@@ -2,8 +2,8 @@
 
 ![Server](https://img.shields.io/badge/server-v2.0.0-red.svg)
 [![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
-[![iOS](https://img.shields.io/badge/swift-v1.0.2-blue.svg)](#ios)
-[![Javascript](https://img.shields.io/badge/javascript-v1.0.4-orange.svg)](#javascript)
+[![iOS](https://img.shields.io/badge/swift-v2.0.0beta-blue.svg)](#ios)
+[![Javascript](https://img.shields.io/badge/javascript-v2.0.0beta-orange.svg)](#javascript)
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
 [![Java](https://img.shields.io/badge/java-v1.2.0-green.svg)](#java)
 [![Node](https://img.shields.io/badge/node-howto-darkgreen.svg)](#node)
@@ -163,7 +163,7 @@ roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase
 
 ### iOS
 
-![iOS](https://img.shields.io/badge/swift-v1.0.2-blue.svg)
+![iOS](https://img.shields.io/badge/swift-v2.0.0beta-blue.svg)
 
 **Step 1:** For either Objective-C or Swift projects add rosefire as a dependancy in your cocoapods:
 
@@ -173,7 +173,7 @@ use_frameworks!
 
 # ... Other pods ...
 
-pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'swift-v1.0.2'
+pod 'Rosefire', :git => 'https://github.com/rockwotj/rosefire.git', :tag => 'swift-v2.0.0beta'
 ```
 
 Then run `pod install`
@@ -184,15 +184,16 @@ Then run `pod install`
 
 ```swift
 let myFirebaseRef = Firebase(url: "https://myproject.firebaseio.com")
-myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulman.edu", password: "Pa$sW0rd") {
-  (err, authData) -> Void in
+Rosefire.sharedDelegate().uiDelegate = self // This should be your view controller
+Rosefire.sharedDelegate().signIn(REGISTRY_TOKEN) { (err, token) in
+  myFirebaseRef.authWithCustomToken(token) { (err, authData) -> Void in
     if err == nil {
       // Show logged in UI
     } else {
       // Show login error
     }
+  }
 }
-
 ```
 
 #### Objective-C Projects
@@ -207,39 +208,47 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", email: "rockwotj@rose-hulma
 
 ```objc
 Firebase* myFirebaseRef = [[Firebase alloc] initWithUrl:@"https://myproject.firebaseio.com"];
-[myFirebaseRef authWithRoseHulman:@"<REGISTRY_TOKEN>"
-                            email:@"rockwotj@rose-hulman.edu"
-                         password:@"Pa$sW0rd"
-              withCompletionBlock:^(NSError * err, FAuthData * authData) {
-    if (!err) {
-        // Show logged in UI
+[Rosefire sharedDelegate].uiDelegate = self // This should be your view controller
+[[Rosefire sharedDelegate] signIn:REGISTRY_TOKEN
+                           withClosure:^(NSError* err, NSString* token) {
+  [myFirebaseRef authWithCustomToken: token,
+                 withCompletionBlock:^(NSError *error, FAuthData *authData) {
+    if (!error) {
+      // Show logged in UI
     } else {
-        // Show login error
+      // Show login error
     }
+  }];
 }];
 ```
 
 ### Javascript
 
-![Javascript](https://img.shields.io/badge/javascript-v1.0.4-orange.svg)
+![Javascript](https://img.shields.io/badge/javascript-v2.0.0beta-orange.svg)
 
 **Step 1:** You either need to include this script tag, OR download the file and host it on your server. Either way you need to reference this file. Make sure you include this AFTER Firebase.
 
 ```html
 <!-- Include Firebase First! -->
-<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v1.0.4/dist/js/rosefire.min.js"></script>
+<script src="https://cdn.rawgit.com/rockwotj/rosefire/js-v2.0.0beta/dist/js/rosefire.min.js"></script>
 ```
 
 **Step 2:** You're all ready to authenticate if you use [Firebase's plain javascript SDK](https://www.firebase.com/docs/web/api/).
 
 ```javascript
 var myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
-myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu", "Pa$sW0rd", function(err, authData) {
+Rosefire.getToken("<REGISTRY_TOKEN>", function(err, token) {
   if (err) {
     // User not logged in!
-  } else {
-    // User logged in successfully 
+    return;
   }
+  myFirebaseRef.authWithCustomToken(token, function(err, authData) {
+    if (err) {
+      // User not logged in!
+    } else {
+      // User logged in successfully 
+    }
+  });
 });
 ```
 
@@ -249,12 +258,7 @@ myFirebaseRef.authWithRoseHulman("<REGISTRY_TOKEN>", "rockwotj@rose-hulman.edu",
 app.controller("MyAuthCtrl", ["$firebaseAuth", "$window",
   function($firebaseAuth, $window) {
     var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
-    var data = {
-      registryToken: "<REGISTRY_TOKEN>", 
-      email: "rockwotj@rose-hulman.edu", 
-      password: "Pa$sW0rd"
-    };
-    $window.Rosefire.getToken(data, function(err, token) {
+    $window.Rosefire.getToken("<REGISTRY_TOKEN>", function(err, token) {
       if (err) {
         // User not logged in!
         return;

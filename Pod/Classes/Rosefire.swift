@@ -1,7 +1,6 @@
 
 import UIKit
 import WebKit
-import Firebase
 
 public typealias RosefireCallback = ((NSError!, String!) -> ())!
 
@@ -10,7 +9,7 @@ public class Rosefire : NSObject {
     
     private static var rosefire : Rosefire?
     
-    public class func sharedDelegate() -> Rosefire! {
+    @objc public class func sharedDelegate() -> Rosefire! {
         if rosefire == nil {
             rosefire = Rosefire()
         }
@@ -18,35 +17,46 @@ public class Rosefire : NSObject {
     }
     
     public var uiDelegate : UIViewController?
+    private var webview : WebviewController!
     
     private override init() {
         super.init()
     }
     
-    public func signIn(registryToken : String!, withClosure closure: RosefireCallback) {
+    @objc public func signIn(registryToken : String!, withClosure closure: RosefireCallback) {
         if uiDelegate == nil {
             let err = NSError(domain: "Failed to set UI Delegate for Rosefire", code: 500, userInfo: nil)
             closure(err, nil)
             return
         }
-        let webview = WebviewController()
+        webview = WebviewController()
         webview.registryToken = registryToken
         webview.callback = { (err, token) in
             self.uiDelegate!.dismissViewControllerAnimated(true, completion: nil)
             closure(err, token)
         }
-        uiDelegate!.presentViewController(webview, animated: true, completion: nil)
+        // Is this robust?
+        let rootCtrl = UINavigationController(rootViewController: webview)
+        webview.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
+                                                                   style: .Plain,
+                                                                   target: self,
+                                                                   action: #selector(cancelled))
+        uiDelegate!.presentViewController(rootCtrl, animated: true, completion: nil)
+    }
+    
+    @objc private func cancelled() {
+        
+        let err = NSError(domain: "User cancelled login", code: 0, userInfo: nil)
+        self.webview?.callback(err, nil)
     }
     
 }
 
-
-@objc
-private class WebviewController : UIViewController, WKScriptMessageHandler {
+private class WebviewController : UIViewController, WKScriptMessageHandler, WKNavigationDelegate, WKUIDelegate {
     
     var webview: WKWebView?
     var registryToken: String?
-    var callback: RosefireCallback?
+    var callback: RosefireCallback
     
     private override func loadView() {
         super.loadView()
@@ -67,15 +77,26 @@ private class WebviewController : UIViewController, WKScriptMessageHandler {
     private override func viewDidLoad() {
         super.viewDidLoad()
         
-        let token = registryToken!.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
-        let url = NSURL(string: "https://rosefire.csse.rose-hulman.edu/webview/login?platform=ios&registryToken=\(token)")
+        let token = registryToken!.stringByAddingPercentEncodingForRFC3986()!
+        let rosefireUrl = "https://rosefire.csse.rose-hulman.edu/webview/login?registryToken=\(token)&platform=ios"
+        let url = NSURL(string: rosefireUrl)
         let req = NSURLRequest(URL: url!)
         webview!.loadRequest(req)
     }
     
     @objc func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if(message.name == "rosefire") {
-            print("JavaScript is sending a message \(message.body)")
+            callback(nil, message.body as! String)
         }
+    }
+}
+
+// From http://useyourloaf.com/blog/how-to-percent-encode-a-url-string/
+extension String {
+    func stringByAddingPercentEncodingForRFC3986() -> String? {
+        let unreserved = "-._~/?"
+        let allowed = NSMutableCharacterSet.alphanumericCharacterSet()
+        allowed.addCharactersInString(unreserved)
+        return stringByAddingPercentEncodingWithAllowedCharacters(allowed)
     }
 }

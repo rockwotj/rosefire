@@ -11,7 +11,7 @@ import android.webkit.WebView;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-class WebLoginActivity extends AppCompatActivity {
+public class WebLoginActivity extends AppCompatActivity {
 
     private WebView mLoginScreen;
 

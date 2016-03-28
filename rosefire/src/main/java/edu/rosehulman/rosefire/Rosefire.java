@@ -5,8 +5,6 @@ import android.content.Intent;
 
 public class Rosefire {
 
-    public static int REQUEST_CODE = 5500;
-
     static boolean DEBUG = false;
 
     public static Intent getSignInIntent(Context context, String registryToken) {

@@ -1,7 +1,7 @@
 # Rose-Hulman Authentication API
 
 ![Server](https://img.shields.io/badge/server-v2.0.0-red.svg)
-[![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](#android)
+[![Android](https://img.shields.io/badge/android-v2.0.0beta-brightgreen.svg)](#android)
 [![iOS](https://img.shields.io/badge/swift-v2.0.0beta-blue.svg)](#ios)
 [![Javascript](https://img.shields.io/badge/javascript-v2.0.0beta-orange.svg)](#javascript)
 [![Python](https://img.shields.io/badge/python-v1.1.0-yellow.svg)](#python)
@@ -122,7 +122,7 @@ There are client libraries available to more easily integrate this into your cod
 
 ### Android
 
-[![Android](https://img.shields.io/badge/android-v1.3.0-brightgreen.svg)](https://jitpack.io/#rockwotj/rosefire/android-v1.3.0)
+[![Android](https://img.shields.io/badge/android-v2.0.0beta-brightgreen.svg)](https://jitpack.io/#rockwotj/rosefire/android-v2.0.0beta)
 
 **Step 1:** Add jitpack in your build.gradle at the end of repositories:
 
@@ -139,26 +139,39 @@ android {
 **Step 2:** Add the dependency in the form:
 ```gradle
 dependencies {
-  compile 'com.github.rockwotj:rosefire:android-v1.3.0'
+  compile 'com.github.rockwotj:rosefire:android-v2.0.0beta'
 }
 ```
 
 **Step 3:** Authenticate a Rose-Hulman User with Firebase
 
 ```java
-Firebase myFirebaseRef = new Firebase("https://myproject.firebaseio.com");
-RosefireAuth roseAuth = new RosefireAuth(myFirebaseRef, "<REGISTRY_TOKEN>");
-roseAuth.authWithRoseHulman("rockwotj@rose-hulman.edu", "Pa$sW0rd", new Firebase.AuthResultHandler() {
-    @Override
-    public void onAuthenticated(AuthData authData) {
-        // Show logged in UI
-    }
+// In your activity...
+public void onRosefireLogin() {
+        Intent signInIntent = Rosefire.getSignInIntent(this, REGISTRY_TOKEN);
+        startActivityForResult(signInIntent, RC_ROSEFIRE_LOGIN);
+}
 
-    @Override
-    public void onAuthenticationError(FirebaseError firebaseError) {
-        // Show Login Error
-  }
-});
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == RC_ROSEFIRE_LOGIN) {
+        String token = Rosefire.getSignInResultFromIntent(data);
+        Firebase firebase = new Firebase("https://myproject.firebaseio.com");
+        firebase.authWithCustomToken(token, new AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                // Show logged in UI
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                // Show login error message
+            }
+        });
+    }
+}
+
+
 ```
 
 ### iOS

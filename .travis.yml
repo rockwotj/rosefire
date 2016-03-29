@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-- '5'
-- stable
-before_install:
-- cp secrets.sample.json secrets.json
-branches:
-  only:
-    - master
